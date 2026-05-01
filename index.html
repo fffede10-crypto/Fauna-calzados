@@ -475,6 +475,13 @@ a{text-decoration:none}
 }
 .shipping-free{background:rgba(37,211,102,.14);color:#25D366;border:1px solid rgba(37,211,102,.35)}
 .shipping-paid{background:rgba(255,200,50,.1);color:#d4a800;border:1px solid rgba(255,200,50,.3)}
+.combo-banner{
+  margin:.75rem .75rem 0;padding:.65rem 1rem;
+  border-radius:var(--r);font-size:.84rem;font-weight:500;
+  display:flex;align-items:center;gap:.55rem;line-height:1.35;
+}
+.combo-progress{background:#C49A6C;color:#2C1810;}
+.combo-active{background:#d4edda;color:#1a5e2a;}
 
 /* ════════════════════════════════════════
    FLOATING WA BUTTON
@@ -1311,6 +1318,15 @@ function updateCount(){
   setTimeout(function(){el.classList.remove('bump');},220);
 }
 
+function totalImportadas(){
+  return cart.filter(function(i){return i.id.indexOf('imp-')===0;})
+    .reduce(function(s,i){return s+i.qty;},0);
+}
+
+function impPrice(pr,totalImp){
+  return totalImp>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+}
+
 function renderCart(){
   var body=document.getElementById('cartBody');
   var footer=document.getElementById('cartFooter');
@@ -1319,9 +1335,23 @@ function renderCart(){
     footer.innerHTML='';return;
   }
 
-  body.innerHTML=cart.map(function(item){
+  var totalImp=totalImportadas();
+  var faltanImp=WHOLESALE_MIN-totalImp;
+  var bannerHTML='';
+  if(totalImp>0&&totalImp<WHOLESALE_MIN){
+    bannerHTML='<div class="combo-banner combo-progress">'+
+      '&#127873; Agregá '+faltanImp+' importada'+(faltanImp>1?'s':'')+' más y pagás $38.000 c/u'+
+    '</div>';
+  } else if(totalImp>=WHOLESALE_MIN){
+    bannerHTML='<div class="combo-banner combo-active">'+
+      '&#10003; Descuento aplicado &mdash; $38.000 c/u en todas las importadas'+
+    '</div>';
+  }
+
+  body.innerHTML=bannerHTML+cart.map(function(item){
     var pr=PRICES[item.id];
-    var u=item.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+    var isImp=item.id.indexOf('imp-')===0;
+    var u=isImp?impPrice(pr,totalImp):(item.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit);
     var priceStr=u>0?fmt(u*item.qty):'Consult&aacute; precio';
     return '<div class="cart-item">'+
       '<div class="ci-thumb">'+
@@ -1344,7 +1374,9 @@ function renderCart(){
 
   var hasAllPrices=cart.every(function(i){return PRICES[i.id].unit>0;});
   var total=cart.reduce(function(s,i){
-    var pr=PRICES[i.id];var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+    var pr=PRICES[i.id];
+    var isImp=i.id.indexOf('imp-')===0;
+    var u=isImp?impPrice(pr,totalImp):(i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit);
     return s+(u*i.qty);
   },0);
   var totalStr=hasAllPrices?'<span class="ct-amount">'+fmt(total)+'</span>':'<span class="ct-amount consultar">Consultar precio</span>';
@@ -1405,13 +1437,18 @@ function sendWhatsApp(){
   var envioLine=zona==='oeste'
     ?'🚚 *Envío:* GRATIS (Zona Oeste)'
     :'📮 *Envío:* A calcular — te confirmamos el costo por WhatsApp';
+  var totalImp=totalImportadas();
   var total=cart.reduce(function(s,i){
-    var pr=PRICES[i.id];var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;return s+(u*i.qty);
+    var pr=PRICES[i.id];
+    var isImp=i.id.indexOf('imp-')===0;
+    var u=isImp?impPrice(pr,totalImp):(i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit);
+    return s+(u*i.qty);
   },0);
 
   var detalle=cart.map(function(i){
     var pr=PRICES[i.id];
-    var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+    var isImp=i.id.indexOf('imp-')===0;
+    var u=isImp?impPrice(pr,totalImp):(i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit);
     var pStr=u>0?fmt(u*i.qty):'Consultar';
     return '• '+i.name+' | Talle '+i.size+' | x'+i.qty+' | '+pStr;
   }).join('\n');
@@ -1432,6 +1469,7 @@ function sendWhatsApp(){
     '',
     '💰 *Total: '+totalLine+'*',
   ];
+  if(totalImp>=WHOLESALE_MIN) lines.push('','&#127873; *Combo importadas:* $38.000 c/u ('+totalImp+' unidades)');
   if(nota) lines.push('','&#128203; *Nota:* '+nota);
 
   window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
