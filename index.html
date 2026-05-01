@@ -840,17 +840,17 @@ a{text-decoration:none}
    "Consultá precio" en lugar del valor.
    ═══════════════════════════════════════════════════════ */
 var PRICES = {
-  'chavito-negro':   { unit: 0, mayor: 0 },
-  'chavito-suela':   { unit: 0, mayor: 0 },
-  'pantubota-negra': { unit: 0, mayor: 0 },
-  'pantubota-beige': { unit: 0, mayor: 0 },
-  'pantufla-negra':  { unit: 0, mayor: 0 },
-  'pantufla-beige':  { unit: 0, mayor: 0 },
-  'lluvia-verde':    { unit: 0, mayor: 0 },
-  'lluvia-beige':    { unit: 0, mayor: 0 },
-  'preski-negra':    { unit: 0, mayor: 0 },
-  'preski-baja':     { unit: 0, mayor: 0 },
-  '47street':        { unit: 0, mayor: 0 },
+  'chavito-negro':   { unit: 35000, mayor: 0 },
+  'chavito-suela':   { unit: 35000, mayor: 0 },
+  'pantubota-negra': { unit: 38000, mayor: 0 },
+  'pantubota-beige': { unit: 38000, mayor: 0 },
+  'pantufla-negra':  { unit: 25000, mayor: 0 },
+  'pantufla-beige':  { unit: 25000, mayor: 0 },
+  'lluvia-verde':    { unit: 28000, mayor: 0 },
+  'lluvia-beige':    { unit: 28000, mayor: 0 },
+  'preski-negra':    { unit: 48000, mayor: 0 },
+  'preski-baja':     { unit: 48000, mayor: 0 },
+  '47street':        { unit: 38000, mayor: 0 },
   /* ── Importadas Brasil ── */
   'imp-campus-verde':            { unit: 45000, mayor: 38000 },
   'imp-campus-celeste':          { unit: 45000, mayor: 38000 },
@@ -1041,7 +1041,7 @@ function renderProducts(){
 
     var priceHTML=hasPrice
       ?'<div class="card-price">'+unitStr+'</div>'+
-        (pr.mayor>0?'<div class="card-price-w">x'+WHOLESALE_MIN+'+: <strong>'+fmt(pr.mayor)+'</strong> c/u</div>':'')
+        (pr.mayor>0?'<div class="card-price-w"><strong>'+fmt(pr.mayor)+'</strong> c/u llevando '+WHOLESALE_MIN+' o m&aacute;s</div>':'')
       :'<div class="card-price consultar">Consult&aacute; precio</div>';
 
     return '<article class="product-card" onclick="openModal(\''+p.id+'\')" style="animation-delay:'+(i*0.04)+'s">'+
@@ -1155,7 +1155,7 @@ function renderModal(){
 
   var priceHTML=hasPrice
     ?'<div class="modal-price">'+fmt(pr.unit)+'</div>'+
-      (pr.mayor>0?'<div class="modal-price-w">x'+WHOLESALE_MIN+'+ unidades: <strong>'+fmt(pr.mayor)+'</strong> c/u</div>':'<div class="modal-price-w" style="margin-bottom:1.2rem"></div>')
+      (pr.mayor>0?'<div class="modal-price-w"><strong>'+fmt(pr.mayor)+'</strong> c/u llevando '+WHOLESALE_MIN+' o m&aacute;s</div>':'<div class="modal-price-w" style="margin-bottom:1.2rem"></div>')
     :'<div class="modal-price consultar">Consult&aacute; precio por WhatsApp</div><div class="modal-price-w" style="margin-bottom:1.2rem"></div>';
 
   var waConsultMsg=encodeURIComponent('Hola! Me interesa el producto: *'+p.name+'*. ¿Podrían darme el precio?');
