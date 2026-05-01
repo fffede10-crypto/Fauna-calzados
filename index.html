@@ -8,607 +8,568 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* ── Variables ─────────────────────────── */
-    :root {
-      --bg:         #0d0d0d;
-      --bg2:        #141414;
-      --bg3:        #1c1c1c;
-      --bg4:        #242424;
-      --border:     #2a2a2a;
-      --border2:    #333;
-      --gold:       #c9a96e;
-      --gold-light: #e2c98a;
-      --gold-dim:   rgba(201,169,110,.15);
-      --text:       #f0ece4;
-      --text-muted: #888;
-      --text-faint: #555;
-      --red:        #d95252;
-      --radius-sm:  8px;
-      --radius:     12px;
-      --radius-lg:  18px;
-      --ease:       0.22s ease;
-    }
+/* ════════════════════════════════════════
+   VARIABLES
+════════════════════════════════════════ */
+:root {
+  --bg:          #0d0d0d;
+  --bg2:         #141414;
+  --bg3:         #1c1c1c;
+  --bg4:         #242424;
+  --border:      #2a2a2a;
+  --border2:     #383838;
+  --gold:        #c9a96e;
+  --gold-light:  #e2c98a;
+  --gold-dim:    rgba(201,169,110,.14);
+  --text:        #f0ece4;
+  --text-muted:  #888;
+  --text-faint:  #555;
+  --red:         #d95252;
+  --green:       #25D366;
+  --r-sm: 8px; --r: 12px; --r-lg: 18px;
+  --ease: 0.22s ease;
+}
 
-    /* ── Reset ─────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Outfit', sans-serif;
-      min-height: 100dvh;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-    img { display: block; max-width: 100%; }
-    button { font-family: inherit; }
+/* ════════════════════════════════════════
+   RESET
+════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer}
+a{text-decoration:none}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 
-    /* ── Scrollbar ─────────────────────────── */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg2); }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+/* ════════════════════════════════════════
+   SKELETON SHIMMER
+════════════════════════════════════════ */
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton::after{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite;
+  border-radius:inherit;
+}
 
-    /* ══════════════════════════════════════════
-       NAVBAR
-    ══════════════════════════════════════════ */
-    .navbar {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(13,13,13,.96);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-      height: 62px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.75rem; font-weight: 700;
-      letter-spacing: .18em; color: var(--gold);
-      text-decoration: none; line-height: 1;
-    }
-    .logo sup {
-      font-family: 'Outfit', sans-serif;
-      font-size: .45rem; font-weight: 400;
-      letter-spacing: .06em; color: var(--text-muted);
-      vertical-align: super; margin-left: 2px;
-    }
-    .nav-right { display: flex; align-items: center; gap: .75rem; }
-    .cart-btn {
-      background: var(--gold); color: #0d0d0d;
-      border: none; border-radius: 50px;
-      padding: .45rem 1.1rem;
-      font-size: .88rem; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; gap: .45rem;
-      transition: all var(--ease);
-    }
-    .cart-btn:hover { background: var(--gold-light); transform: scale(1.03); }
-    .cart-btn:active { transform: scale(.98); }
-    .cart-count {
-      background: #0d0d0d; color: var(--gold);
-      border-radius: 50%; width: 20px; height: 20px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .72rem; font-weight: 700; line-height: 1;
-      transition: transform .18s;
-    }
-    .cart-count.bump { transform: scale(1.4); }
+/* ════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════ */
+.navbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(13,13,13,.97);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  padding:0 1.5rem;height:64px;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+}
+.logo{
+  font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:700;
+  letter-spacing:.18em;color:var(--gold);line-height:1;flex-shrink:0;
+}
+.logo sup{
+  font-family:'Outfit',sans-serif;font-size:.44rem;font-weight:400;
+  letter-spacing:.06em;color:var(--text-muted);vertical-align:super;margin-left:2px;
+}
 
-    /* ══════════════════════════════════════════
-       HERO
-    ══════════════════════════════════════════ */
-    .hero {
-      padding: 5.5rem 1.5rem 4.5rem;
-      text-align: center;
-      background: linear-gradient(180deg, #120e08 0%, var(--bg) 100%);
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,169,110,.14) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-tag {
-      font-size: .72rem; letter-spacing: .32em;
-      color: var(--gold); text-transform: uppercase;
-      font-weight: 500; margin-bottom: 1.4rem;
-      opacity: .85;
-    }
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.4rem, 9vw, 7rem);
-      font-weight: 300; line-height: 1.0;
-      color: var(--text); letter-spacing: -.01em;
-      margin-bottom: .6rem;
-    }
-    .hero h1 em { font-style: italic; color: var(--gold); }
-    .hero-sub {
-      font-size: 1rem; color: var(--text-muted);
-      margin: 1rem auto 2.2rem; max-width: 480px;
-      line-height: 1.65; font-weight: 300;
-    }
-    .hero-cta {
-      display: inline-flex; align-items: center; gap: .5rem;
-      background: var(--gold); color: #0d0d0d;
-      border: none; border-radius: 50px;
-      padding: .75rem 2rem; font-size: 1rem; font-weight: 600;
-      cursor: pointer; margin-bottom: 2.5rem;
-      transition: all var(--ease); text-decoration: none;
-    }
-    .hero-cta:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,169,110,.25); }
-    .hero-badges {
-      display: flex; gap: .75rem; justify-content: center;
-      flex-wrap: wrap;
-    }
-    .hero-badge {
-      border: 1px solid var(--border2);
-      padding: .38rem 1rem;
-      border-radius: 50px;
-      font-size: .78rem; color: var(--text-muted);
-    }
-    .hero-badge strong { color: var(--gold-light); font-weight: 500; }
+/* Search in navbar */
+.nav-search-wrap{
+  flex:1;max-width:340px;position:relative;
+  display:flex;align-items:center;
+}
+.nav-search-icon{
+  position:absolute;left:.9rem;color:var(--text-faint);pointer-events:none;
+  display:flex;align-items:center;
+}
+.nav-search-clear{
+  position:absolute;right:.9rem;color:var(--text-faint);background:none;border:none;
+  font-size:1rem;line-height:1;padding:0;display:none;transition:color var(--ease);
+}
+.nav-search-clear:hover{color:var(--gold)}
+.nav-search{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:50px;padding:.5rem 2.2rem .5rem 2.4rem;
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;outline:none;
+  transition:border-color var(--ease),box-shadow var(--ease);
+}
+.nav-search::placeholder{color:var(--text-faint)}
+.nav-search:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.12)}
 
-    /* ══════════════════════════════════════════
-       CATALOG
-    ══════════════════════════════════════════ */
-    .catalog {
-      max-width: 1320px; margin: 0 auto;
-      padding: 2.5rem 1.5rem 5rem;
-    }
-    .catalog-header {
-      display: flex; gap: 1rem; flex-wrap: wrap;
-      align-items: center; margin-bottom: 2rem;
-    }
-    .search-wrap {
-      flex: 1; min-width: 200px;
-      position: relative;
-    }
-    .search-icon {
-      position: absolute; left: .95rem; top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-faint); font-size: .9rem;
-      pointer-events: none;
-    }
-    .search-box {
-      width: 100%;
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 50px; padding: .62rem 1.1rem .62rem 2.4rem;
-      color: var(--text); font-family: 'Outfit', sans-serif;
-      font-size: .9rem; outline: none;
-      transition: border-color var(--ease);
-    }
-    .search-box::placeholder { color: var(--text-faint); }
-    .search-box:focus { border-color: var(--gold); }
-    .filters { display: flex; gap: .4rem; flex-wrap: wrap; }
-    .filter-btn {
-      background: var(--bg2); border: 1px solid var(--border);
-      color: var(--text-muted); padding: .48rem 1rem;
-      border-radius: 50px; cursor: pointer;
-      font-size: .8rem; font-weight: 400;
-      transition: all var(--ease); white-space: nowrap;
-    }
-    .filter-btn:hover { border-color: var(--gold); color: var(--text); }
-    .filter-btn.active {
-      background: var(--gold); border-color: var(--gold);
-      color: #0d0d0d; font-weight: 600;
-    }
+.nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+.search-toggle-btn{
+  display:none;background:var(--bg3);border:1px solid var(--border);
+  color:var(--text-muted);width:38px;height:38px;border-radius:50%;
+  align-items:center;justify-content:center;transition:all var(--ease);
+}
+.search-toggle-btn:hover{border-color:var(--gold);color:var(--gold)}
 
-    /* ── Product Grid ───────────────────────── */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 1.25rem;
-    }
-    .product-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-      cursor: pointer; position: relative;
-      transition: border-color var(--ease), transform var(--ease), box-shadow var(--ease);
-    }
-    .product-card:hover {
-      border-color: rgba(201,169,110,.5);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 48px rgba(0,0,0,.45);
-    }
-    .card-img-wrap {
-      position: relative; width: 100%;
-      aspect-ratio: 4/3; overflow: hidden;
-      background: var(--bg3);
-    }
-    .card-img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform .4s ease;
-    }
-    .product-card:hover .card-img { transform: scale(1.04); }
-    .card-placeholder {
-      position: absolute; inset: 0;
-      display: none; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: .5rem; color: var(--text-faint); font-size: .8rem;
-      background: var(--bg3);
-    }
-    .card-placeholder .pl-emoji { font-size: 3.5rem; line-height: 1; }
-    .card-placeholder .pl-name { color: var(--text-muted); font-size: .78rem; letter-spacing: .05em; }
-    .card-body { padding: 1.15rem 1.2rem 1.2rem; }
-    .card-badges { display: flex; gap: .35rem; margin-bottom: .55rem; flex-wrap: wrap; }
-    .badge {
-      font-size: .67rem; padding: .18rem .55rem;
-      border-radius: 50px; font-weight: 600;
-      letter-spacing: .04em; line-height: 1.4;
-    }
-    .badge-hot { background: rgba(217,82,82,.13); color: #e06060; border: 1px solid rgba(217,82,82,.25); }
-    .badge-last { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(201,169,110,.3); }
-    .badge-cat {
-      background: var(--bg4); color: var(--text-faint);
-      border: 1px solid var(--border); text-transform: uppercase;
-      letter-spacing: .09em;
-    }
-    .card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem; font-weight: 600;
-      color: var(--text); line-height: 1.2;
-      margin-bottom: .3rem;
-    }
-    .card-desc {
-      font-size: .78rem; color: var(--text-muted);
-      line-height: 1.55; margin-bottom: .85rem;
-      font-weight: 300;
-    }
-    .card-pricing { margin-bottom: .85rem; }
-    .card-price {
-      font-size: 1.15rem; font-weight: 600; color: var(--gold);
-    }
-    .card-price-w {
-      font-size: .73rem; color: var(--text-faint);
-      margin-top: .1rem;
-    }
-    .card-price-w strong { color: var(--text-muted); }
-    .card-cta {
-      width: 100%; background: transparent;
-      border: 1px solid rgba(201,169,110,.35); color: var(--gold);
-      padding: .52rem; border-radius: var(--radius-sm);
-      cursor: pointer; font-size: .85rem; font-weight: 500;
-      transition: all var(--ease);
-    }
-    .card-cta:hover { background: var(--gold); color: #0d0d0d; border-color: var(--gold); }
+.cart-btn{
+  background:var(--gold);color:#0d0d0d;border:none;border-radius:50px;
+  padding:.45rem 1.1rem;font-size:.88rem;font-weight:600;
+  display:flex;align-items:center;gap:.45rem;transition:all var(--ease);
+  min-height:38px;
+}
+.cart-btn:hover{background:var(--gold-light);transform:scale(1.04)}
+.cart-btn:active{transform:scale(.97)}
+@keyframes cart-pop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+.cart-btn.pop{animation:cart-pop .35s ease}
 
-    /* ── No Results ─────────────────────────── */
-    .no-results {
-      text-align: center; padding: 5rem 1rem;
-      color: var(--text-muted); display: none;
-    }
-    .no-results h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem; color: var(--text);
-      margin-bottom: .4rem;
-    }
+.cart-count{
+  background:#0d0d0d;color:var(--gold);border-radius:50%;
+  width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;line-height:1;transition:transform .18s;
+}
+.cart-count.bump{transform:scale(1.45)}
 
-    /* ══════════════════════════════════════════
-       MODAL
-    ══════════════════════════════════════════ */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.82);
-      z-index: 200;
-      display: flex; align-items: center; justify-content: center;
-      padding: 1rem;
-      opacity: 0; pointer-events: none;
-      transition: opacity var(--ease);
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      max-width: 580px; width: 100%;
-      max-height: 90dvh; overflow-y: auto;
-      transform: translateY(22px) scale(.97);
-      transition: transform var(--ease);
-    }
-    .modal-overlay.open .modal { transform: translateY(0) scale(1); }
-    .modal-img-wrap {
-      position: relative; width: 100%;
-      aspect-ratio: 4/3; overflow: hidden;
-      background: var(--bg3);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }
-    .modal-img {
-      width: 100%; height: 100%; object-fit: cover;
-    }
-    .modal-placeholder {
-      position: absolute; inset: 0;
-      display: none; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: .75rem; background: var(--bg3);
-    }
-    .modal-placeholder .pl-emoji { font-size: 6rem; line-height: 1; }
-    .modal-placeholder .pl-name { color: var(--text-muted); font-size: .9rem; letter-spacing: .08em; }
-    .modal-body { padding: 1.5rem 1.6rem 1.8rem; }
-    .modal-toprow {
-      display: flex; justify-content: space-between;
-      align-items: flex-start; gap: 1rem; margin-bottom: .5rem;
-    }
-    .modal-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.1rem; font-weight: 600;
-      line-height: 1.05; color: var(--text);
-    }
-    .modal-close {
-      flex-shrink: 0;
-      background: var(--bg4); border: 1px solid var(--border);
-      color: var(--text-muted); width: 36px; height: 36px;
-      border-radius: 50%; cursor: pointer; font-size: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: all var(--ease);
-    }
-    .modal-close:hover { background: var(--gold); color: #0d0d0d; border-color: var(--gold); }
-    .modal-desc {
-      color: var(--text-muted); font-size: .88rem;
-      line-height: 1.65; margin-bottom: 1.1rem; font-weight: 300;
-    }
-    .modal-price { font-size: 1.6rem; font-weight: 700; color: var(--gold); }
-    .modal-price-w { font-size: .8rem; color: var(--text-muted); margin-top: .1rem; margin-bottom: 1.3rem; }
-    .modal-price-w strong { color: var(--text-faint); }
-    .sizes-label {
-      font-size: .72rem; color: var(--text-faint);
-      text-transform: uppercase; letter-spacing: .12em;
-      margin-bottom: .6rem; font-weight: 500;
-    }
-    .sizes-grid {
-      display: flex; gap: .5rem; flex-wrap: wrap;
-      margin-bottom: 1.25rem;
-    }
-    .size-btn {
-      padding: .55rem .95rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg3); color: var(--text);
-      cursor: pointer; font-family: 'Outfit', sans-serif;
-      font-size: .85rem; line-height: 1;
-      transition: all var(--ease); text-align: center;
-      min-width: 54px;
-    }
-    .size-btn .size-qty {
-      display: block; font-size: .6rem;
-      color: var(--text-faint); margin-top: .2rem;
-    }
-    .size-btn:hover:not([disabled]) { border-color: var(--gold); color: var(--gold); }
-    .size-btn.selected {
-      background: var(--gold); border-color: var(--gold);
-      color: #0d0d0d; font-weight: 600;
-    }
-    .size-btn.selected .size-qty { color: rgba(0,0,0,.55); }
-    .size-btn[disabled] {
-      opacity: .3; cursor: not-allowed;
-      text-decoration: line-through;
-    }
-    .add-btn {
-      width: 100%; background: var(--gold); color: #0d0d0d;
-      border: none; border-radius: var(--radius-sm);
-      padding: .9rem; font-size: 1rem; font-weight: 600;
-      cursor: pointer; transition: all var(--ease);
-    }
-    .add-btn:hover:not([disabled]) { background: var(--gold-light); transform: translateY(-1px); }
-    .add-btn:active:not([disabled]) { transform: translateY(0); }
-    .add-btn[disabled] { opacity: .35; cursor: not-allowed; }
+/* Mobile search bar (below navbar) */
+.mobile-search-bar{
+  display:none;position:sticky;top:64px;z-index:99;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:.75rem 1rem;
+}
+.mobile-search-bar.open{display:block}
+.mobile-search-bar .nav-search{max-width:100%}
 
-    /* ══════════════════════════════════════════
-       CART DRAWER
-    ══════════════════════════════════════════ */
-    .cart-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.65);
-      z-index: 300;
-      opacity: 0; pointer-events: none;
-      transition: opacity var(--ease);
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: all; }
-    .cart-drawer {
-      position: fixed; top: 0; right: 0;
-      height: 100%; width: min(430px, 100vw);
-      background: var(--bg2);
-      border-left: 1px solid var(--border);
-      z-index: 301;
-      display: flex; flex-direction: column;
-      transform: translateX(100%);
-      transition: transform .3s cubic-bezier(.4,0,.2,1);
-    }
-    .cart-overlay.open .cart-drawer { transform: translateX(0); }
+/* ════════════════════════════════════════
+   HERO
+════════════════════════════════════════ */
+.hero{
+  padding:6rem 1.5rem 5rem;text-align:center;
+  background:linear-gradient(180deg,#130f09 0%,var(--bg) 100%);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(201,169,110,.16) 0%,transparent 70%);
+  pointer-events:none;
+}
+/* subtle texture */
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='rgba(255,255,255,.015)'/%3E%3C/svg%3E");
+  pointer-events:none;
+}
+.hero-tag{
+  font-size:.7rem;letter-spacing:.35em;color:var(--gold);
+  text-transform:uppercase;font-weight:500;margin-bottom:1.5rem;opacity:.9;
+  position:relative;z-index:1;
+}
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(4rem,10vw,8rem);font-weight:300;line-height:.95;
+  color:var(--text);letter-spacing:-.01em;margin-bottom:.7rem;
+  position:relative;z-index:1;
+}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{
+  font-size:1.05rem;color:var(--text-muted);
+  margin:1.2rem auto 2.5rem;max-width:460px;
+  line-height:1.7;font-weight:300;position:relative;z-index:1;
+}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--gold);color:#0d0d0d;border:none;border-radius:50px;
+  padding:.8rem 2.2rem;font-size:1rem;font-weight:600;
+  margin-bottom:2.8rem;transition:all var(--ease);position:relative;z-index:1;
+}
+.hero-cta:hover{background:var(--gold-light);transform:translateY(-3px);box-shadow:0 10px 30px rgba(201,169,110,.3)}
+.hero-badges{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.hero-badge{
+  border:1px solid var(--border2);padding:.4rem 1rem;
+  border-radius:50px;font-size:.77rem;color:var(--text-muted);
+}
+.hero-badge strong{color:var(--gold-light);font-weight:500}
 
-    .cart-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      display: flex; justify-content: space-between;
-      align-items: center; flex-shrink: 0;
-    }
-    .cart-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem; font-weight: 600; color: var(--text);
-    }
-    .cart-close {
-      background: var(--bg4); border: 1px solid var(--border);
-      color: var(--text-muted); width: 36px; height: 36px;
-      border-radius: 50%; cursor: pointer; font-size: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: all var(--ease);
-    }
-    .cart-close:hover { background: var(--gold); color: #0d0d0d; border-color: var(--gold); }
+/* ════════════════════════════════════════
+   INFO SECTION
+════════════════════════════════════════ */
+.info-section{
+  background:var(--bg2);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);padding:2.5rem 1.5rem;
+}
+.info-cards{
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+}
+.info-card{
+  text-align:center;padding:1.5rem 1rem;
+  border:1px solid var(--border);border-radius:var(--r);
+  background:var(--bg3);transition:all var(--ease);
+}
+.info-card:hover{border-color:rgba(201,169,110,.4);transform:translateY(-3px)}
+.info-icon{font-size:2rem;margin-bottom:.7rem;line-height:1}
+.info-card h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.15rem;
+  font-weight:600;color:var(--text);margin-bottom:.3rem;
+}
+.info-card p{font-size:.82rem;color:var(--text-muted);font-weight:300;line-height:1.5}
 
-    .cart-body {
-      flex: 1; overflow-y: auto;
-      padding: 1rem 1.5rem;
-    }
-    .cart-empty {
-      text-align: center; padding: 4rem .5rem;
-      color: var(--text-muted);
-    }
-    .cart-empty .ce-icon { font-size: 3rem; margin-bottom: .8rem; opacity: .4; }
-    .cart-empty p { font-size: .88rem; line-height: 1.6; }
+/* ════════════════════════════════════════
+   CATALOG
+════════════════════════════════════════ */
+.catalog{max-width:1320px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.catalog-header{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:2rem}
+.filters{display:flex;gap:.4rem;flex-wrap:wrap}
+.filter-btn{
+  background:var(--bg2);border:1px solid var(--border);
+  color:var(--text-muted);padding:.48rem 1rem;border-radius:50px;
+  font-size:.8rem;white-space:nowrap;transition:all var(--ease);
+  min-height:36px;
+}
+.filter-btn:hover{border-color:var(--gold);color:var(--text)}
+.filter-btn.active{background:var(--gold);border-color:var(--gold);color:#0d0d0d;font-weight:600}
 
-    .cart-item {
-      display: flex; gap: .9rem;
-      padding: .9rem 0; border-bottom: 1px solid var(--border);
-      align-items: flex-start;
-    }
-    .ci-thumb {
-      width: 60px; height: 60px;
-      border-radius: var(--radius-sm);
-      background: var(--bg3);
-      flex-shrink: 0; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-    }
-    .ci-thumb img {
-      width: 100%; height: 100%; object-fit: cover;
-    }
-    .ci-info { flex: 1; min-width: 0; }
-    .ci-name { font-size: .9rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .ci-size { font-size: .75rem; color: var(--text-muted); margin-top: .1rem; }
-    .ci-price { font-size: .85rem; color: var(--gold); font-weight: 500; margin-top: .25rem; }
-    .ci-controls { display: flex; align-items: center; gap: .4rem; margin-top: .45rem; }
-    .qty-btn {
-      background: var(--bg4); border: 1px solid var(--border);
-      color: var(--text); width: 26px; height: 26px;
-      border-radius: 6px; cursor: pointer; font-size: .95rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: all var(--ease); line-height: 1;
-    }
-    .qty-btn:hover { border-color: var(--gold); color: var(--gold); }
-    .qty-val { font-size: .88rem; font-weight: 600; min-width: 22px; text-align: center; }
-    .ci-remove {
-      flex-shrink: 0; background: transparent; border: none;
-      color: var(--text-faint); cursor: pointer; font-size: .95rem;
-      padding: .2rem; transition: color var(--ease);
-      align-self: center;
-    }
-    .ci-remove:hover { color: var(--red); }
+/* Grid */
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:1.25rem;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.product-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;cursor:pointer;
+  transition:border-color var(--ease),transform var(--ease),box-shadow var(--ease);
+  animation:fadeUp .3s ease both;
+}
+.product-card:hover{
+  border-color:rgba(201,169,110,.55);
+  transform:translateY(-6px);
+  box-shadow:0 20px 56px rgba(0,0,0,.5);
+}
+.card-img-wrap{
+  position:relative;width:100%;aspect-ratio:4/3;
+  overflow:hidden;background:var(--bg3);
+}
+.card-img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .45s ease;position:relative;z-index:2;
+}
+.product-card:hover .card-img{transform:scale(1.06)}
+.card-placeholder{
+  position:absolute;inset:0;z-index:2;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:.5rem;background:var(--bg3);
+}
+.card-placeholder .pl-emoji{font-size:3.5rem;line-height:1}
+.card-placeholder .pl-name{color:var(--text-muted);font-size:.75rem;letter-spacing:.05em}
+.card-body{padding:1.1rem 1.2rem 1.2rem}
+.card-badges{display:flex;gap:.35rem;margin-bottom:.5rem;flex-wrap:wrap}
+.badge{font-size:.66rem;padding:.18rem .55rem;border-radius:50px;font-weight:600;letter-spacing:.04em;line-height:1.4}
+.badge-hot{background:rgba(217,82,82,.13);color:#e06060;border:1px solid rgba(217,82,82,.25)}
+.badge-last{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(201,169,110,.3)}
+.badge-cat{background:var(--bg4);color:var(--text-faint);border:1px solid var(--border);text-transform:uppercase;letter-spacing:.08em}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:.3rem}
+.card-desc{font-size:.77rem;color:var(--text-muted);line-height:1.55;margin-bottom:.8rem;font-weight:300}
+.card-price{font-size:1.15rem;font-weight:600;color:var(--gold);margin-bottom:.1rem}
+.card-price-w{font-size:.72rem;color:var(--text-faint);margin-bottom:.8rem}
+.card-price-w strong{color:var(--text-muted)}
+.card-price.consultar{color:var(--text-muted);font-size:.95rem;font-style:italic}
+.card-cta{
+  width:100%;background:transparent;
+  border:1px solid rgba(201,169,110,.35);color:var(--gold);
+  padding:.52rem;border-radius:var(--r-sm);font-size:.85rem;font-weight:500;
+  transition:all var(--ease);min-height:38px;
+}
+.card-cta:hover{background:var(--gold);color:#0d0d0d;border-color:var(--gold)}
 
-    .cart-footer {
-      padding: 1rem 1.5rem 1.5rem;
-      border-top: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .cart-total-row {
-      display: flex; justify-content: space-between;
-      align-items: baseline; padding-bottom: 1rem;
-      margin-bottom: 1rem; border-bottom: 1px solid var(--border);
-    }
-    .ct-label { font-size: .85rem; color: var(--text-muted); }
-    .ct-amount { font-size: 1.45rem; font-weight: 700; color: var(--gold); }
+/* No results */
+.no-results{text-align:center;padding:5rem 1rem;color:var(--text-muted);display:none}
+.no-results h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--text);margin-bottom:.4rem}
 
-    .form-group { margin-bottom: .75rem; }
-    .form-label {
-      display: block; font-size: .7rem;
-      color: var(--text-faint); text-transform: uppercase;
-      letter-spacing: .1em; margin-bottom: .3rem; font-weight: 500;
-    }
-    .form-input {
-      width: 100%; background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: .58rem .9rem;
-      color: var(--text); font-family: 'Outfit', sans-serif;
-      font-size: .85rem; outline: none;
-      transition: border-color var(--ease);
-    }
-    .form-input:focus { border-color: var(--gold); }
-    .form-input::placeholder { color: var(--text-faint); }
+/* ════════════════════════════════════════
+   MODAL
+════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.84);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+  opacity:0;pointer-events:none;transition:opacity var(--ease);
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);
+  max-width:580px;width:100%;max-height:90dvh;overflow-y:auto;
+  transform:translateY(24px) scale(.97);transition:transform var(--ease);
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-img-wrap{
+  position:relative;width:100%;aspect-ratio:4/3;
+  overflow:hidden;background:var(--bg3);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;
+}
+.modal-img{width:100%;height:100%;object-fit:cover;position:relative;z-index:2}
+.modal-placeholder{
+  position:absolute;inset:0;z-index:2;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:.75rem;background:var(--bg3);
+}
+.modal-placeholder .pl-emoji{font-size:6rem;line-height:1}
+.modal-placeholder .pl-name{color:var(--text-muted);font-size:.9rem;letter-spacing:.08em}
+.modal-body{padding:1.5rem 1.6rem 1.8rem}
+.modal-toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.5rem}
+.modal-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;line-height:1.05;color:var(--text)}
+.modal-close{
+  flex-shrink:0;background:var(--bg4);border:1px solid var(--border);
+  color:var(--text-muted);width:36px;height:36px;border-radius:50%;
+  font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:all var(--ease);
+}
+.modal-close:hover{background:var(--gold);color:#0d0d0d;border-color:var(--gold)}
+.modal-desc{color:var(--text-muted);font-size:.87rem;line-height:1.65;margin-bottom:1rem;font-weight:300}
+.modal-price{font-size:1.6rem;font-weight:700;color:var(--gold)}
+.modal-price.consultar{font-size:1.1rem;color:var(--text-muted);font-style:italic;font-weight:400}
+.modal-price-w{font-size:.78rem;color:var(--text-muted);margin-top:.1rem;margin-bottom:1.2rem}
+.modal-price-w strong{color:var(--text-faint)}
+.sizes-label{font-size:.7rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.55rem;font-weight:500}
+.sizes-grid{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.size-btn{
+  padding:.52rem .9rem;border:1px solid var(--border);border-radius:var(--r-sm);
+  background:var(--bg3);color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:.84rem;line-height:1;transition:all var(--ease);text-align:center;min-width:52px;
+  min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.size-btn .size-qty{display:block;font-size:.58rem;color:var(--text-faint);margin-top:.2rem}
+.size-btn:hover:not([disabled]){border-color:var(--gold);color:var(--gold)}
+.size-btn.selected{background:var(--gold);border-color:var(--gold);color:#0d0d0d;font-weight:600}
+.size-btn.selected .size-qty{color:rgba(0,0,0,.5)}
+.size-btn[disabled]{opacity:.28;cursor:not-allowed;text-decoration:line-through}
+.modal-actions{display:flex;flex-direction:column;gap:.65rem}
+.add-btn{
+  width:100%;background:var(--gold);color:#0d0d0d;border:none;
+  border-radius:var(--r-sm);padding:.9rem;font-size:1rem;font-weight:600;
+  transition:all var(--ease);min-height:48px;
+}
+.add-btn:hover:not([disabled]){background:var(--gold-light);transform:translateY(-1px)}
+.add-btn[disabled]{opacity:.32;cursor:not-allowed}
+.wa-consult-btn{
+  width:100%;background:transparent;border:1px solid rgba(37,211,102,.4);
+  color:var(--green);border-radius:var(--r-sm);padding:.8rem;
+  font-size:.9rem;font-weight:500;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  transition:all var(--ease);min-height:44px;
+}
+.wa-consult-btn:hover{background:rgba(37,211,102,.1);border-color:var(--green)}
 
-    .wa-btn {
-      width: 100%; background: #25D366; color: #fff;
-      border: none; border-radius: var(--radius-sm);
-      padding: .88rem; font-size: .95rem; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center;
-      justify-content: center; gap: .5rem;
-      margin-top: .85rem; transition: all var(--ease);
-    }
-    .wa-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
-    .wa-btn:active { transform: translateY(0); }
-    .wa-btn svg { flex-shrink: 0; }
+/* ════════════════════════════════════════
+   CART DRAWER
+════════════════════════════════════════ */
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;
+  opacity:0;pointer-events:none;transition:opacity var(--ease);
+}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-drawer{
+  position:fixed;top:0;right:0;height:100%;width:min(430px,100vw);
+  background:var(--bg2);border-left:1px solid var(--border);z-index:301;
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);
+}
+.cart-overlay.open .cart-drawer{transform:translateX(0)}
+.cart-header{
+  padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+.cart-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--text)}
+.cart-close{
+  background:var(--bg4);border:1px solid var(--border);
+  color:var(--text-muted);width:36px;height:36px;border-radius:50%;
+  font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:all var(--ease);
+}
+.cart-close:hover{background:var(--gold);color:#0d0d0d;border-color:var(--gold)}
+.cart-body{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.cart-empty{text-align:center;padding:4rem .5rem;color:var(--text-muted)}
+.cart-empty .ce-icon{font-size:3rem;margin-bottom:.8rem;opacity:.35}
+.cart-empty p{font-size:.87rem;line-height:1.6}
+.cart-item{display:flex;gap:.9rem;padding:.9rem 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.ci-thumb{
+  width:64px;height:64px;border-radius:var(--r-sm);
+  background:var(--bg3);flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;
+}
+.ci-thumb img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:.9rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-size{font-size:.75rem;color:var(--text-muted);margin-top:.1rem}
+.ci-price{font-size:.85rem;color:var(--gold);font-weight:500;margin-top:.22rem}
+.ci-controls{display:flex;align-items:center;gap:.4rem;margin-top:.45rem}
+.qty-btn{
+  background:var(--bg4);border:1px solid var(--border);color:var(--text);
+  width:30px;height:30px;border-radius:6px;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;transition:all var(--ease);
+  min-width:30px;min-height:30px;
+}
+.qty-btn:hover{border-color:var(--gold);color:var(--gold)}
+.qty-val{font-size:.88rem;font-weight:600;min-width:24px;text-align:center}
+.ci-remove{
+  flex-shrink:0;background:transparent;border:none;
+  color:var(--text-faint);font-size:.95rem;padding:.25rem;
+  transition:color var(--ease);align-self:center;
+}
+.ci-remove:hover{color:var(--red)}
+/* Cart footer */
+.cart-footer{padding:1rem 1.5rem 1.6rem;border-top:1px solid var(--border);flex-shrink:0}
+.cart-total-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid var(--border);
+}
+.ct-label{font-size:.85rem;color:var(--text-muted)}
+.ct-amount{font-size:1.45rem;font-weight:700;color:var(--gold)}
+.ct-amount.consultar{font-size:.95rem;color:var(--text-muted);font-style:italic;font-weight:400}
+/* Form */
+.form-group{margin-bottom:.7rem}
+.form-label{display:block;font-size:.68rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.28rem;font-weight:500}
+.form-input,.form-select,.form-textarea{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:.58rem .9rem;
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;
+  transition:border-color var(--ease);
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-faint)}
+.form-select{appearance:none;-webkit-appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .9rem center;padding-right:2.2rem;
+}
+.form-select option{background:var(--bg3)}
+.form-textarea{resize:none;line-height:1.5;min-height:54px}
+.wa-btn{
+  width:100%;background:var(--green);color:#fff;border:none;border-radius:var(--r-sm);
+  padding:.9rem;font-size:.95rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  margin-top:.9rem;transition:all var(--ease);min-height:48px;
+}
+.wa-btn:hover{background:#1ebe5d;transform:translateY(-1px)}
+.wa-btn:active{transform:translateY(0)}
+.wa-btn svg{flex-shrink:0}
 
-    /* ══════════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════════ */
-    .site-footer {
-      border-top: 1px solid var(--border);
-      background: var(--bg2);
-      padding: 3.5rem 1.5rem 2.5rem;
-      text-align: center;
-    }
-    .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem; font-weight: 700;
-      color: var(--gold); letter-spacing: .18em;
-      margin-bottom: .3rem;
-    }
-    .footer-sub { color: var(--text-faint); font-size: .8rem; margin-bottom: 1.8rem; font-weight: 300; letter-spacing: .05em; }
-    .footer-links { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
-    .footer-link {
-      color: var(--text-muted); text-decoration: none;
-      font-size: .83rem; display: flex; align-items: center;
-      gap: .35rem; transition: color var(--ease);
-    }
-    .footer-link:hover { color: var(--gold); }
-    .footer-divider { width: 40px; height: 1px; background: var(--border2); margin: 0 auto 1.5rem; }
-    .footer-copy { font-size: .72rem; color: var(--border2); }
+/* ════════════════════════════════════════
+   FLOATING WA BUTTON
+════════════════════════════════════════ */
+.wa-float{
+  position:fixed;bottom:1.5rem;right:1.5rem;z-index:150;
+  background:var(--green);color:#fff;
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(37,211,102,.4);
+  transition:all var(--ease);
+}
+.wa-float:hover{transform:scale(1.12);box-shadow:0 6px 28px rgba(37,211,102,.55)}
+.wa-float-tooltip{
+  position:absolute;right:66px;background:var(--bg2);color:var(--text);
+  padding:.35rem .75rem;border-radius:50px;font-size:.75rem;font-weight:500;
+  white-space:nowrap;border:1px solid var(--border);
+  opacity:0;transform:translateX(6px);transition:all var(--ease);pointer-events:none;
+}
+.wa-float:hover .wa-float-tooltip{opacity:1;transform:translateX(0)}
 
-    /* ══════════════════════════════════════════
-       TOAST
-    ══════════════════════════════════════════ */
-    .toast {
-      position: fixed; bottom: 2rem; left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--gold); color: #0d0d0d;
-      padding: .65rem 1.4rem; border-radius: 50px;
-      font-size: .88rem; font-weight: 600;
-      z-index: 500; white-space: nowrap;
-      box-shadow: 0 8px 24px rgba(0,0,0,.4);
-      transition: transform .28s cubic-bezier(.34,1.56,.64,1);
-      pointer-events: none;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+.site-footer{border-top:1px solid var(--border);background:var(--bg2);padding:3.5rem 1.5rem 2.5rem;text-align:center}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);letter-spacing:.18em;margin-bottom:.2rem}
+.footer-tagline{color:var(--text-faint);font-size:.78rem;margin-bottom:1.8rem;letter-spacing:.05em}
+.footer-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem}
+.footer-link{
+  color:var(--text-muted);font-size:.82rem;
+  display:flex;align-items:center;gap:.35rem;transition:color var(--ease);
+}
+.footer-link:hover{color:var(--gold)}
+.footer-schedule{font-size:.78rem;color:var(--text-faint);margin-bottom:1.8rem}
+.footer-divider{width:40px;height:1px;background:var(--border2);margin:0 auto 1.5rem}
+.footer-copy{font-size:.7rem;color:var(--border2)}
 
-    /* ══════════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════════ */
-    @media (max-width: 640px) {
-      .navbar { padding: 0 1rem; }
-      .hero { padding: 4rem 1rem 3.5rem; }
-      .catalog { padding: 1.5rem 1rem 3.5rem; }
-      .catalog-header { flex-direction: column; align-items: stretch; }
-      .search-wrap { min-width: unset; }
-      .product-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: .85rem; }
-      .card-name { font-size: 1.1rem; }
-      .card-body { padding: .9rem 1rem 1rem; }
-      .modal-name { font-size: 1.7rem; }
-    }
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:2rem;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--gold);color:#0d0d0d;
+  padding:.65rem 1.4rem;border-radius:50px;font-size:.87rem;font-weight:600;
+  z-index:500;white-space:nowrap;pointer-events:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media(max-width:768px){
+  .nav-search-wrap{display:none}
+  .search-toggle-btn{display:flex}
+  .info-cards{grid-template-columns:1fr;gap:1rem}
+}
+@media(max-width:640px){
+  .navbar{padding:0 1rem;height:58px}
+  .mobile-search-bar{top:58px}
+  .hero{padding:4.5rem 1rem 4rem}
+  .catalog{padding:1.5rem 1rem 3.5rem}
+  .product-grid{grid-template-columns:repeat(2,1fr);gap:.85rem}
+  .card-body{padding:.85rem .95rem .95rem}
+  .card-name{font-size:1.1rem}
+  .card-desc{display:none}
+  /* Modal full screen on mobile */
+  .modal-overlay{padding:0;align-items:flex-end}
+  .modal{max-width:100%;max-height:95dvh;border-radius:var(--r-lg) var(--r-lg) 0 0}
+  .modal-img-wrap{border-radius:var(--r-lg) var(--r-lg) 0 0}
+  .modal-name{font-size:1.7rem}
+  .footer-links{flex-direction:column;align-items:center;gap:.8rem}
+}
   </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════
+<!-- ════════════════════
      NAVBAR
-════════════════════════════════ -->
+════════════════════ -->
 <nav class="navbar">
   <a href="#" class="logo">FAUNA<sup>CALZADOS</sup></a>
+
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="search" class="nav-search" id="searchInput" placeholder="Buscar producto o categoría..." autocomplete="off" oninput="onSearch()">
+    <button class="nav-search-clear" id="searchClear" onclick="clearSearch()">&#10005;</button>
+  </div>
+
   <div class="nav-right">
+    <button class="search-toggle-btn" id="searchToggle" onclick="toggleMobileSearch()" aria-label="Buscar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
     <button class="cart-btn" id="cartBtn" onclick="toggleCart()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       Pedido
       <span class="cart-count" id="cartCount">0</span>
     </button>
   </div>
 </nav>
 
-<!-- ════════════════════════════════
+<!-- Mobile search bar -->
+<div class="mobile-search-bar" id="mobileSearchBar">
+  <div style="position:relative">
+    <span style="position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:var(--text-faint);pointer-events:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </span>
+    <input type="search" class="nav-search" id="mobileSearchInput" placeholder="Buscar producto..." autocomplete="off" oninput="onMobileSearch()" style="padding-left:2.4rem;width:100%">
+  </div>
+</div>
+
+<!-- ════════════════════
      HERO
-════════════════════════════════ -->
+════════════════════ -->
 <section class="hero">
-  <div class="hero-tag">&#10022; &nbsp;Invierno 2026 &nbsp;&middot;&nbsp; Liquidaci&oacute;n de stock&nbsp; &#10022;</div>
+  <div class="hero-tag">&#10022;&nbsp; Invierno 2026 &nbsp;&middot;&nbsp; Liquidaci&oacute;n de stock &nbsp;&#10022;</div>
   <h1>FAUNA<br><em>Calzados</em></h1>
-  <p class="hero-sub">Botas, pantuflas y calzado de invierno premium. Stock limitado de temporada.</p>
+  <p class="hero-sub">Botas, pantuflas y calzado de invierno premium.<br>Stock limitado de temporada.</p>
   <a href="#catalogo" class="hero-cta">
     Ver colecci&oacute;n
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
   <div class="hero-badges">
     <div class="hero-badge">&#128230; <strong>Zona Oeste GBA</strong> + env&iacute;os nacionales</div>
@@ -617,17 +578,34 @@
   </div>
 </section>
 
-<!-- ════════════════════════════════
+<!-- ════════════════════
+     INFO SECTION
+════════════════════ -->
+<section class="info-section">
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="info-icon">&#128230;</div>
+      <h3>Env&iacute;o Zona Oeste</h3>
+      <p>Entrega en 24-48hs en toda la zona Oeste del GBA</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">&#128666;</div>
+      <h3>Correo a todo el pa&iacute;s</h3>
+      <p>Coordinamos el env&iacute;o por correo a cualquier provincia</p>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">&#128172;</div>
+      <h3>Atenci&oacute;n personalizada</h3>
+      <p>Respondemos todas tus consultas por WhatsApp</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════
      CATALOG
-════════════════════════════════ -->
+════════════════════ -->
 <section class="catalog" id="catalogo">
   <div class="catalog-header">
-    <div class="search-wrap">
-      <span class="search-icon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      </span>
-      <input type="search" class="search-box" id="searchInput" placeholder="Buscar producto..." autocomplete="off" oninput="renderProducts()">
-    </div>
     <div class="filters">
       <button class="filter-btn active" data-filter="todos" onclick="setFilter(this)">Todos</button>
       <button class="filter-btn" data-filter="botas" onclick="setFilter(this)">Botas</button>
@@ -640,578 +618,508 @@
   <div class="product-grid" id="productGrid"></div>
   <div class="no-results" id="noResults">
     <h3>Sin resultados</h3>
-    <p>Prob&aacute; con otro nombre o categor&iacute;a</p>
+    <p>Prob&aacute; con otro nombre o cambi&aacute; el filtro</p>
   </div>
 </section>
 
-<!-- ════════════════════════════════
+<!-- ════════════════════
      FOOTER
-════════════════════════════════ -->
+════════════════════ -->
 <footer class="site-footer">
   <div class="footer-logo">FAUNA</div>
-  <div class="footer-sub">CALZADOS &nbsp;&middot;&nbsp; INVIERNO 2026</div>
+  <div class="footer-tagline">CALZADOS &nbsp;&middot;&nbsp; INVIERNO 2026</div>
   <div class="footer-links">
     <a href="https://wa.me/5491130570055" target="_blank" rel="noopener" class="footer-link">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      WhatsApp +54 9 11 3057-0055
+      +54 9 11 3057-0055
     </a>
     <a href="#catalogo" class="footer-link">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      Zona Oeste GBA + Correo a todo el pa&iacute;s
+      Zona Oeste GBA &middot; Env&iacute;os a todo el pa&iacute;s
     </a>
   </div>
+  <div class="footer-schedule">&#128336; Atenci&oacute;n: Lunes a S&aacute;bado de 9 a 20hs</div>
   <div class="footer-divider"></div>
   <div class="footer-copy">&copy; 2026 FAUNA Calzados &nbsp;&middot;&nbsp; Todos los derechos reservados</div>
 </footer>
 
-<!-- ════════════════════════════════
-     MODAL PRODUCTO
-════════════════════════════════ -->
+<!-- ════════════════════
+     MODAL
+════════════════════ -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleModalClick(event)">
   <div class="modal" id="modal">
     <div id="modalContent"></div>
   </div>
 </div>
 
-<!-- ════════════════════════════════
-     CARRITO DRAWER
-════════════════════════════════ -->
+<!-- ════════════════════
+     CARRITO
+════════════════════ -->
 <div class="cart-overlay" id="cartOverlay" onclick="handleCartClick(event)">
   <div class="cart-drawer">
     <div class="cart-header">
       <div class="cart-title">Tu pedido</div>
-      <button class="cart-close" onclick="toggleCart()" aria-label="Cerrar carrito">&#10005;</button>
+      <button class="cart-close" onclick="toggleCart()">&#10005;</button>
     </div>
     <div class="cart-body" id="cartBody"></div>
     <div id="cartFooter"></div>
   </div>
 </div>
 
+<!-- Floating WA -->
+<a href="https://wa.me/5491130570055" class="wa-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <span class="wa-float-tooltip">Consultar por WhatsApp</span>
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
 <!-- Toast -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<!-- ════════════════════════════════
+<!-- ════════════════════════════════════════
      JAVASCRIPT
-════════════════════════════════ -->
+════════════════════════════════════════ -->
 <script>
 'use strict';
 
-/* ══════════════════════════════════════
-   PRECIOS — editá estos valores para actualizar
-   unit: precio por unidad
-   wholesale: precio c/u comprando WHOLESALE_MIN o más del mismo artículo
-══════════════════════════════════════ */
-const PRICES = {
-  'chavito-negro':   { unit: 28000, wholesale: 23500 },
-  'chavito-suela':   { unit: 28000, wholesale: 23500 },
-  'pantubota-negra': { unit: 22000, wholesale: 18000 },
-  'pantubota-beige': { unit: 22000, wholesale: 18000 },
-  'pantufla-negra':  { unit: 14500, wholesale: 12000 },
-  'pantufla-beige':  { unit: 14500, wholesale: 12000 },
-  'lluvia-verde':    { unit: 19000, wholesale: 16000 },
-  'lluvia-beige':    { unit: 19000, wholesale: 16000 },
-  'preski-negra':    { unit: 26000, wholesale: 22000 },
-  'preski-baja':     { unit: 24000, wholesale: 20500 },
-  '47street':        { unit: 21000, wholesale: 17500 },
-};
-const WHOLESALE_MIN = 3;   // cantidad mínima para precio mayorista
-const WA_NUMBER = '5491130570055';
+/* ═══════════════════════════════════════════════════════
+   CONFIGURAR PRECIOS ACÁ
+   ═══════════════════════════════════════════════════════
+   unit:  precio por unidad
+   mayor: precio c/u comprando WHOLESALE_MIN o más
 
-/* ══════════════════════════════════════
-   CATÁLOGO DE PRODUCTOS
-══════════════════════════════════════ */
-const PRODUCTS = [
-  {
-    id: 'chavito-negro',
-    name: 'Chavito Negro',
-    category: 'botas',
-    desc: 'Gamuza negra con corderito interior y suela camel. Diseño clásico, cálido y versátil.',
-    img: './img/chavito-negro.jpg',
-    emoji: '👢',
-    hot: false,
-    sizes: { '35':1, '36':2, '37':2, '39':1, '40':3 }
-  },
-  {
-    id: 'chavito-suela',
-    name: 'Chavito Suela',
-    category: 'botas',
-    desc: 'Gamuza camel con corderito interior y suela natural. Elegancia y confort para el día a día.',
-    img: './img/chavito-suela.jpg',
-    emoji: '👢',
-    hot: false,
-    sizes: { '35':1, '36':1, '37':1, '38':1, '39':2, '40':1 }
-  },
-  {
-    id: 'pantubota-negra',
-    name: 'Pantubota Negra',
-    category: 'botas',
-    desc: 'Media caña negra con corderito voluminoso. Máximo abrigo y comodidad para el invierno.',
-    img: './img/pantubota-negra.jpg',
-    emoji: '🦴',
-    hot: true,
-    sizes: { '5/6':4, '38':11, '9/0':10, '41':6 }
-  },
-  {
-    id: 'pantubota-beige',
-    name: 'Pantubota Beige',
-    category: 'botas',
-    desc: 'Media caña camel con corderito beige. El mejor complemento para tu look de invierno.',
-    img: './img/pantubota-beige.jpg',
-    emoji: '🦴',
-    hot: true,
-    sizes: { '36':1, '38':5, '39/40':3, '41':7 }
-  },
-  {
-    id: 'pantufla-negra',
-    name: 'Pantufla Negra',
-    category: 'pantuflas',
-    desc: 'Gamuza negra con corderito negro. Suave, cálida y elegante para uso interior.',
-    img: './img/pantufla-negra.jpg',
-    emoji: '🩴',
-    hot: false,
-    sizes: { '35':1, '36':2, '37':3, '38':2, '39':1, '40':2, '41':1 }
-  },
-  {
-    id: 'pantufla-beige',
-    name: 'Pantufla Beige',
-    category: 'pantuflas',
-    desc: 'Gamuza camel con corderito blanco. Clásica y acogedora para los días de frío.',
-    img: './img/pantufla-beige.jpg',
-    emoji: '🩴',
-    hot: false,
-    sizes: { '35':1, '36':1, '38':2, '39':1, '40':1 }
-  },
-  {
-    id: 'lluvia-verde',
-    name: 'Bota Lluvia Verde',
-    category: 'lluvia',
-    desc: 'Bota impermeable en verde agua. Resistente a la lluvia con estilo y practicidad.',
-    img: './img/lluvia-verde.jpg',
-    emoji: '🌧️',
-    hot: false,
-    sizes: { '5/6':3, '0/9':3, '38':1 }
-  },
-  {
-    id: 'lluvia-beige',
-    name: 'Bota Lluvia Beige',
-    category: 'lluvia',
-    desc: 'Bota impermeable beige. Versátil y funcional para cualquier clima.',
-    img: './img/lluvia-beige.jpg',
-    emoji: '🌧️',
-    hot: false,
-    sizes: { '7/8':5, '5/6':2, '0/9':3 }
-  },
-  {
-    id: 'preski-negra',
-    name: 'Pre-ski Negra',
-    category: 'preski',
-    desc: 'Bota acolchada negra con suela chunky negra. Estilo urbano con cobertura total.',
-    img: './img/preski-negra.jpg',
-    emoji: '⛷️',
-    hot: false,
-    sizes: { '35':3, '36':3, '38':1 }
-  },
-  {
-    id: 'preski-baja',
-    name: 'Pre-ski Baja',
-    category: 'preski',
-    desc: 'Bota acolchada negra con suela blanca deportiva. Cómoda y resistente al frío.',
-    img: './img/preski-baja.jpg',
-    emoji: '⛷️',
-    hot: false,
-    sizes: { '35':2, '36':5, '37':2, '38':1, '40':1 }
-  },
-  {
-    id: '47street',
-    name: '47 Street',
-    category: 'zapatillas',
-    desc: 'Zapatilla urbana negra con relieve bold y suela air. Street style para el invierno.',
-    img: './img/47street.jpg',
-    emoji: '👟',
-    hot: false,
-    sizes: { '35':1, '36':1, '38':3, '39':1 }
-  }
+   Si dejás el precio en 0, la tienda mostrará
+   "Consultá precio" en lugar del valor.
+   ═══════════════════════════════════════════════════════ */
+var PRICES = {
+  'chavito-negro':   { unit: 0, mayor: 0 },
+  'chavito-suela':   { unit: 0, mayor: 0 },
+  'pantubota-negra': { unit: 0, mayor: 0 },
+  'pantubota-beige': { unit: 0, mayor: 0 },
+  'pantufla-negra':  { unit: 0, mayor: 0 },
+  'pantufla-beige':  { unit: 0, mayor: 0 },
+  'lluvia-verde':    { unit: 0, mayor: 0 },
+  'lluvia-beige':    { unit: 0, mayor: 0 },
+  'preski-negra':    { unit: 0, mayor: 0 },
+  'preski-baja':     { unit: 0, mayor: 0 },
+  '47street':        { unit: 0, mayor: 0 },
+};
+var WHOLESALE_MIN = 3;
+var WA_NUMBER = '5491130570055';
+
+/* ═══════════════════════════════════════════════════════
+   PRODUCTOS — stock por talle
+   ═══════════════════════════════════════════════════════ */
+var PRODUCTS = [
+  { id:'chavito-negro',   name:'Chavito Negro',      category:'botas',     emoji:'👢', hot:false,
+    desc:'Gamuza negra con corderito interior y suela camel. Diseño clásico, cálido y versátil.',
+    img:'./img/chavito-negro.jpg',   sizes:{'35':1,'36':2,'37':2,'39':1,'40':3} },
+  { id:'chavito-suela',   name:'Chavito Suela',      category:'botas',     emoji:'👢', hot:false,
+    desc:'Gamuza camel con corderito interior y suela natural. Elegancia y confort para el día a día.',
+    img:'./img/chavito-suela.jpg',   sizes:{'35':1,'36':1,'37':1,'38':1,'39':2,'40':1} },
+  { id:'pantubota-negra', name:'Pantubota Negra',    category:'botas',     emoji:'🥾', hot:true,
+    desc:'Media caña negra con corderito voluminoso. Máximo abrigo y comodidad para el invierno.',
+    img:'./img/pantubota-negra.jpg', sizes:{'5/6':4,'38':11,'9/0':10,'41':6} },
+  { id:'pantubota-beige', name:'Pantubota Beige',    category:'botas',     emoji:'🥾', hot:true,
+    desc:'Media caña camel con corderito beige. El mejor complemento para tu look de invierno.',
+    img:'./img/pantubota-beige.jpg', sizes:{'36':1,'38':5,'39/40':3,'41':7} },
+  { id:'pantufla-negra',  name:'Pantufla Negra',     category:'pantuflas', emoji:'🩴', hot:false,
+    desc:'Gamuza negra con corderito negro. Suave, cálida y elegante para uso interior.',
+    img:'./img/pantufla-negra.jpg',  sizes:{'35':1,'36':2,'37':3,'38':2,'39':1,'40':2,'41':1} },
+  { id:'pantufla-beige',  name:'Pantufla Beige',     category:'pantuflas', emoji:'🩴', hot:false,
+    desc:'Gamuza camel con corderito blanco. Clásica y acogedora para los días de frío.',
+    img:'./img/pantufla-beige.jpg',  sizes:{'35':1,'36':1,'38':2,'39':1,'40':1} },
+  { id:'lluvia-verde',    name:'Bota Lluvia Verde',  category:'lluvia',    emoji:'🌧️', hot:false,
+    desc:'Bota impermeable en verde agua. Resistente a la lluvia con estilo y practicidad.',
+    img:'./img/lluvia-verde.jpg',    sizes:{'5/6':3,'0/9':3,'38':1} },
+  { id:'lluvia-beige',    name:'Bota Lluvia Beige',  category:'lluvia',    emoji:'🌧️', hot:false,
+    desc:'Bota impermeable beige. Versátil y funcional para cualquier clima.',
+    img:'./img/lluvia-beige.jpg',    sizes:{'7/8':5,'5/6':2,'0/9':3} },
+  { id:'preski-negra',    name:'Pre-ski Negra',      category:'preski',    emoji:'⛷️', hot:false,
+    desc:'Bota acolchada negra con suela chunky negra. Estilo urbano con cobertura total.',
+    img:'./img/preski-negra.jpg',    sizes:{'35':3,'36':3,'38':1} },
+  { id:'preski-baja',     name:'Pre-ski Baja',       category:'preski',    emoji:'⛷️', hot:false,
+    desc:'Bota acolchada negra con suela blanca deportiva. Cómoda y resistente al frío.',
+    img:'./img/preski-baja.jpg',     sizes:{'35':2,'36':5,'37':2,'38':1,'40':1} },
+  { id:'47street',        name:'47 Street',          category:'zapatillas',emoji:'👟', hot:false,
+    desc:'Zapatilla urbana negra con relieve bold y suela air. Street style para el invierno.',
+    img:'./img/47street.jpg',        sizes:{'35':1,'36':1,'38':3,'39':1} },
 ];
 
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
-var cart = [];
+/* ── State ── */
+var cart        = [];
 var activeFilter = 'todos';
 var activeProduct = null;
-var activeSize = null;
-var formCache = { name: '', phone: '', address: '' };
+var activeSize    = null;
+var formCache = { name:'', phone:'', address:'', zona:'oeste', nota:'' };
+var searchQuery  = '';
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
    UTILS
-══════════════════════════════════════ */
-function totalStock(p) {
-  return Object.values(p.sizes).reduce(function(a, b){ return a + b; }, 0);
+════════════════════════════════════════ */
+function totalStock(p){ return Object.values(p.sizes).reduce(function(a,b){return a+b;},0); }
+
+function fmt(n){
+  if(!n||n===0) return null;
+  return '$'+n.toLocaleString('es-AR');
 }
 
-function fmt(n) {
-  return '$' + n.toLocaleString('es-AR');
+function fmtPrice(n){ return fmt(n) || 'Consultá precio'; }
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function showToast(msg) {
-  var el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(el._tid);
-  el._tid = setTimeout(function(){ el.classList.remove('show'); }, 2400);
+function showToast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},2500);
 }
 
-function esc(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+function waSVG(w,h){
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 }
 
-/* ══════════════════════════════════════
-   IMAGE HELPERS
-══════════════════════════════════════ */
-function cardImg(p) {
-  return '<div class="card-img-wrap">' +
-    '<img class="card-img" src="' + p.img + '" alt="' + esc(p.name) + '" loading="lazy"' +
-    ' onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-    '<div class="card-placeholder">' +
-    '<span class="pl-emoji">' + p.emoji + '</span>' +
-    '<span class="pl-name">' + esc(p.name.toUpperCase()) + '</span>' +
-    '</div></div>';
+/* ════════════════════════════════════════
+   SEARCH
+════════════════════════════════════════ */
+function onSearch(){
+  var v=document.getElementById('searchInput').value;
+  searchQuery=v.toLowerCase().trim();
+  var clr=document.getElementById('searchClear');
+  if(clr) clr.style.display=searchQuery?'block':'none';
+  renderProducts();
+  if(searchQuery) document.getElementById('catalogo').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function modalImgHTML(p) {
-  return '<div class="modal-img-wrap">' +
-    '<img class="modal-img" src="' + p.img + '" alt="' + esc(p.name) + '"' +
-    ' onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-    '<div class="modal-placeholder">' +
-    '<span class="pl-emoji">' + p.emoji + '</span>' +
-    '<span class="pl-name">' + esc(p.name.toUpperCase()) + '</span>' +
-    '</div></div>';
-}
-
-/* ══════════════════════════════════════
-   CATALOG
-══════════════════════════════════════ */
-function setFilter(btn) {
-  activeFilter = btn.dataset.filter;
-  document.querySelectorAll('.filter-btn').forEach(function(b){
-    b.classList.toggle('active', b === btn);
-  });
+function onMobileSearch(){
+  var v=document.getElementById('mobileSearchInput').value;
+  searchQuery=v.toLowerCase().trim();
   renderProducts();
 }
 
-function renderProducts() {
-  var q = document.getElementById('searchInput').value.toLowerCase().trim();
-  var grid = document.getElementById('productGrid');
-  var noRes = document.getElementById('noResults');
+function clearSearch(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').style.display='none';
+  searchQuery='';
+  renderProducts();
+}
 
-  var list = PRODUCTS.filter(function(p) {
-    var okCat = activeFilter === 'todos' || p.category === activeFilter;
-    var okQ   = !q || p.name.toLowerCase().indexOf(q) >= 0 || p.category.toLowerCase().indexOf(q) >= 0;
-    return okCat && okQ;
+function toggleMobileSearch(){
+  var bar=document.getElementById('mobileSearchBar');
+  bar.classList.toggle('open');
+  if(bar.classList.contains('open')) document.getElementById('mobileSearchInput').focus();
+}
+
+/* ════════════════════════════════════════
+   CATALOG
+════════════════════════════════════════ */
+function setFilter(btn){
+  activeFilter=btn.dataset.filter;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.toggle('active',b===btn);});
+  renderProducts();
+}
+
+function renderProducts(){
+  var grid=document.getElementById('productGrid');
+  var noRes=document.getElementById('noResults');
+
+  var list=PRODUCTS.filter(function(p){
+    var okCat=activeFilter==='todos'||p.category===activeFilter;
+    var okQ=!searchQuery||p.name.toLowerCase().indexOf(searchQuery)>=0||p.category.toLowerCase().indexOf(searchQuery)>=0||p.desc.toLowerCase().indexOf(searchQuery)>=0;
+    return okCat&&okQ;
   });
 
-  if (!list.length) {
-    grid.innerHTML = '';
-    noRes.style.display = 'block';
-    return;
-  }
-  noRes.style.display = 'none';
+  if(!list.length){grid.innerHTML='';noRes.style.display='block';return;}
+  noRes.style.display='none';
 
-  grid.innerHTML = list.map(function(p) {
-    var stock = totalStock(p);
-    var isLast = stock > 0 && stock <= 4;
-    var pr = PRICES[p.id];
-    var badges =
-      '<span class="badge badge-cat">' + p.category + '</span>' +
-      (p.hot  ? '<span class="badge badge-hot">&#128293; M&aacute;s pedido</span>' : '') +
-      (isLast ? '<span class="badge badge-last">&#9889; &Uacute;ltimos</span>' : '');
+  grid.innerHTML=list.map(function(p,i){
+    var stock=totalStock(p);
+    var isLast=stock>0&&stock<=4;
+    var pr=PRICES[p.id];
+    var unitStr=fmtPrice(pr.unit);
+    var hasPrice=pr.unit>0;
 
-    return '<article class="product-card" onclick="openModal(\'' + p.id + '\')">' +
-      cardImg(p) +
-      '<div class="card-body">' +
-        '<div class="card-badges">' + badges + '</div>' +
-        '<div class="card-name">' + esc(p.name) + '</div>' +
-        '<div class="card-desc">' + esc(p.desc) + '</div>' +
-        '<div class="card-pricing">' +
-          '<div class="card-price">' + fmt(pr.unit) + '</div>' +
-          '<div class="card-price-w">x' + WHOLESALE_MIN + '+: <strong>' + fmt(pr.wholesale) + '</strong> c/u</div>' +
-        '</div>' +
-        '<button class="card-cta" onclick="event.stopPropagation();openModal(\'' + p.id + '\')">Elegir talle &rarr;</button>' +
-      '</div></article>';
+    var badges='<span class="badge badge-cat">'+p.category+'</span>'+
+      (p.hot?'<span class="badge badge-hot">&#128293; M&aacute;s pedido</span>':'')+
+      (isLast?'<span class="badge badge-last">&#9889; &Uacute;ltimos</span>':'');
+
+    var priceHTML=hasPrice
+      ?'<div class="card-price">'+unitStr+'</div>'+
+        (pr.mayor>0?'<div class="card-price-w">x'+WHOLESALE_MIN+'+: <strong>'+fmt(pr.mayor)+'</strong> c/u</div>':'')
+      :'<div class="card-price consultar">Consult&aacute; precio</div>';
+
+    return '<article class="product-card" onclick="openModal(\''+p.id+'\')" style="animation-delay:'+(i*0.04)+'s">'+
+      '<div class="card-img-wrap skeleton">'+
+        '<img class="card-img" src="'+p.img+'" alt="'+esc(p.name)+'" loading="lazy"'+
+        ' onload="this.parentElement.classList.remove(\'skeleton\')"'+
+        ' onerror="this.style.display=\'none\';this.parentElement.classList.remove(\'skeleton\');this.nextElementSibling.style.display=\'flex\'">'+
+        '<div class="card-placeholder">'+
+          '<span class="pl-emoji">'+p.emoji+'</span>'+
+          '<span class="pl-name">'+esc(p.name.toUpperCase())+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="card-body">'+
+        '<div class="card-badges">'+badges+'</div>'+
+        '<div class="card-name">'+esc(p.name)+'</div>'+
+        '<div class="card-desc">'+esc(p.desc)+'</div>'+
+        priceHTML+
+        '<button class="card-cta" onclick="event.stopPropagation();openModal(\''+p.id+'\')">Ver talles &rarr;</button>'+
+      '</div>'+
+    '</article>';
   }).join('');
 }
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
    MODAL
-══════════════════════════════════════ */
-function openModal(id) {
-  activeProduct = PRODUCTS.find(function(p){ return p.id === id; });
-  activeSize = null;
+════════════════════════════════════════ */
+function openModal(id){
+  activeProduct=PRODUCTS.find(function(p){return p.id===id;});
+  activeSize=null;
   renderModal();
   document.getElementById('modalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
 
-function closeModal() {
+function closeModal(){
   document.getElementById('modalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  activeProduct = null;
-  activeSize = null;
+  document.body.style.overflow='';
+  activeProduct=null;activeSize=null;
 }
 
-function handleModalClick(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
+function handleModalClick(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
 
-function renderModal() {
-  if (!activeProduct) return;
-  var p = activeProduct;
-  var pr = PRICES[p.id];
-  var stock = totalStock(p);
-  var isLast = stock > 0 && stock <= 4;
+function renderModal(){
+  if(!activeProduct)return;
+  var p=activeProduct;
+  var pr=PRICES[p.id];
+  var stock=totalStock(p);
+  var isLast=stock>0&&stock<=4;
+  var hasPrice=pr.unit>0;
 
-  var sizeBtns = Object.entries(p.sizes).map(function(entry) {
-    var sz = entry[0], qty = entry[1];
-    var out = qty === 0;
-    var sel = activeSize === sz;
-    return '<button class="size-btn' + (sel ? ' selected' : '') + '"' +
-      ' data-size="' + sz + '"' +
-      ' onclick="' + (out ? '' : 'pickSize(\'' + sz + '\')') + '"' +
-      (out ? ' disabled' : '') + '>' +
-      sz + '<span class="size-qty">' + (out ? 'Agotado' : qty + ' disp.') + '</span>' +
+  var sizeBtns=Object.entries(p.sizes).map(function(e){
+    var sz=e[0],qty=e[1],out=qty===0,sel=activeSize===sz;
+    return '<button class="size-btn'+(sel?' selected':'')+(out?' out':'')+'"'+
+      ' data-size="'+sz+'"'+
+      (out?' disabled':' onclick="pickSize(\''+sz+'\')"')+'>'+
+      sz+'<span class="size-qty">'+(out?'Agotado':qty+' disp.')+'</span>'+
       '</button>';
   }).join('');
 
-  var badges =
-    '<span class="badge badge-cat">' + p.category + '</span>' +
-    (p.hot  ? '<span class="badge badge-hot">&#128293; M&aacute;s pedido</span>' : '') +
-    (isLast ? '<span class="badge badge-last">&#9889; &Uacute;ltimos</span>' : '');
+  var badges='<span class="badge badge-cat">'+p.category+'</span>'+
+    (p.hot?'<span class="badge badge-hot">&#128293; M&aacute;s pedido</span>':'')+
+    (isLast?'<span class="badge badge-last">&#9889; &Uacute;ltimos</span>':'');
 
-  document.getElementById('modalContent').innerHTML =
-    modalImgHTML(p) +
-    '<div class="modal-body">' +
-      '<div class="card-badges" style="margin-bottom:.5rem">' + badges + '</div>' +
-      '<div class="modal-toprow">' +
-        '<div class="modal-name">' + esc(p.name) + '</div>' +
-        '<button class="modal-close" onclick="closeModal()" aria-label="Cerrar">&#10005;</button>' +
-      '</div>' +
-      '<div class="modal-desc">' + esc(p.desc) + '</div>' +
-      '<div class="modal-price">' + fmt(pr.unit) + '</div>' +
-      '<div class="modal-price-w">x' + WHOLESALE_MIN + '+ unidades: <strong>' + fmt(pr.wholesale) + '</strong> c/u</div>' +
-      '<div class="sizes-label">Eleg&iacute; tu talle</div>' +
-      '<div class="sizes-grid">' + sizeBtns + '</div>' +
-      '<button class="add-btn" id="addBtn" onclick="addToCart()"' + (!activeSize ? ' disabled' : '') + '>' +
-        (activeSize ? 'Agregar talle ' + activeSize + ' al pedido' : 'Seleccion&aacute; un talle') +
-      '</button>' +
+  var priceHTML=hasPrice
+    ?'<div class="modal-price">'+fmt(pr.unit)+'</div>'+
+      (pr.mayor>0?'<div class="modal-price-w">x'+WHOLESALE_MIN+'+ unidades: <strong>'+fmt(pr.mayor)+'</strong> c/u</div>':'<div class="modal-price-w" style="margin-bottom:1.2rem"></div>')
+    :'<div class="modal-price consultar">Consult&aacute; precio por WhatsApp</div><div class="modal-price-w" style="margin-bottom:1.2rem"></div>';
+
+  var waConsultMsg=encodeURIComponent('Hola! Me interesa el producto: *'+p.name+'*. ¿Podrían darme el precio?');
+
+  document.getElementById('modalContent').innerHTML=
+    '<div class="modal-img-wrap skeleton">'+
+      '<img class="modal-img" src="'+p.img+'" alt="'+esc(p.name)+'"'+
+      ' onload="this.parentElement.classList.remove(\'skeleton\')"'+
+      ' onerror="this.style.display=\'none\';this.parentElement.classList.remove(\'skeleton\');this.nextElementSibling.style.display=\'flex\'">'+
+      '<div class="modal-placeholder">'+
+        '<span class="pl-emoji">'+p.emoji+'</span>'+
+        '<span class="pl-name">'+esc(p.name.toUpperCase())+'</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="modal-body">'+
+      '<div class="card-badges" style="margin-bottom:.5rem">'+badges+'</div>'+
+      '<div class="modal-toprow">'+
+        '<div class="modal-name">'+esc(p.name)+'</div>'+
+        '<button class="modal-close" onclick="closeModal()">&#10005;</button>'+
+      '</div>'+
+      '<div class="modal-desc">'+esc(p.desc)+'</div>'+
+      priceHTML+
+      '<div class="sizes-label">Eleg&iacute; tu talle</div>'+
+      '<div class="sizes-grid">'+sizeBtns+'</div>'+
+      '<div class="modal-actions">'+
+        '<button class="add-btn" id="addBtn" onclick="addToCart()"'+(!activeSize?' disabled':'')+'>'+
+          (activeSize?'Agregar talle '+activeSize+' al pedido':'Seleccion&aacute; un talle')+
+        '</button>'+
+        '<a href="https://wa.me/'+WA_NUMBER+'?text='+waConsultMsg+'" target="_blank" rel="noopener" class="wa-consult-btn">'+
+          waSVG(18,18)+' Consultar por WhatsApp'+
+        '</a>'+
+      '</div>'+
     '</div>';
 }
 
-function pickSize(sz) {
-  activeSize = sz;
-  document.querySelectorAll('.size-btn').forEach(function(btn) {
-    var sel = btn.dataset.size === sz;
-    btn.classList.toggle('selected', sel);
-  });
-  var btn = document.getElementById('addBtn');
-  if (btn) {
-    btn.disabled = false;
-    btn.textContent = 'Agregar talle ' + sz + ' al pedido';
-  }
+function pickSize(sz){
+  activeSize=sz;
+  document.querySelectorAll('.size-btn').forEach(function(b){b.classList.toggle('selected',b.dataset.size===sz);});
+  var btn=document.getElementById('addBtn');
+  if(btn){btn.disabled=false;btn.textContent='Agregar talle '+sz+' al pedido';}
 }
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
    CART
-══════════════════════════════════════ */
-function toggleCart() {
-  var overlay = document.getElementById('cartOverlay');
-  var isOpen = overlay.classList.toggle('open');
-  document.body.style.overflow = isOpen ? 'hidden' : '';
-  if (isOpen) renderCart();
+════════════════════════════════════════ */
+function toggleCart(){
+  var o=document.getElementById('cartOverlay');
+  var open=o.classList.toggle('open');
+  document.body.style.overflow=open?'hidden':'';
+  if(open)renderCart();
 }
 
-function handleCartClick(e) {
-  if (e.target === document.getElementById('cartOverlay')) toggleCart();
-}
+function handleCartClick(e){if(e.target===document.getElementById('cartOverlay'))toggleCart();}
 
-function addToCart() {
-  if (!activeProduct || !activeSize) return;
-  var maxQty = activeProduct.sizes[activeSize];
-  var existing = cart.find(function(i){ return i.id === activeProduct.id && i.size === activeSize; });
-  if (existing) {
-    if (existing.qty >= maxQty) { showToast('Stock máximo alcanzado para este talle'); return; }
-    existing.qty++;
+function addToCart(){
+  if(!activeProduct||!activeSize)return;
+  var max=activeProduct.sizes[activeSize];
+  var ex=cart.find(function(i){return i.id===activeProduct.id&&i.size===activeSize;});
+  if(ex){
+    if(ex.qty>=max){showToast('Stock máximo alcanzado para este talle');return;}
+    ex.qty++;
   } else {
-    cart.push({
-      id:    activeProduct.id,
-      name:  activeProduct.name,
-      size:  activeSize,
-      qty:   1,
-      emoji: activeProduct.emoji,
-      img:   activeProduct.img,
-    });
+    cart.push({id:activeProduct.id,name:activeProduct.name,size:activeSize,qty:1,emoji:activeProduct.emoji,img:activeProduct.img});
   }
   updateCount();
-  showToast('Agregado: ' + activeProduct.name + ' — talle ' + activeSize);
+  showToast('Agregado: '+activeProduct.name+' — talle '+activeSize);
   closeModal();
+  // Cart icon animation
+  var btn=document.getElementById('cartBtn');
+  btn.classList.add('pop');setTimeout(function(){btn.classList.remove('pop');},380);
 }
 
-function removeFromCart(id, size) {
-  cart = cart.filter(function(i){ return !(i.id === id && i.size === size); });
-  updateCount();
-  renderCart();
+function removeFromCart(id,size){
+  cart=cart.filter(function(i){return!(i.id===id&&i.size===size);});
+  updateCount();renderCart();
 }
 
-function changeQty(id, size, delta) {
-  var item = cart.find(function(i){ return i.id === id && i.size === size; });
-  if (!item) return;
-  var p = PRODUCTS.find(function(p){ return p.id === id; });
-  var max = p ? p.sizes[size] : 99;
-  var next = Math.max(1, Math.min(item.qty + delta, max));
-  if (next === item.qty && delta > 0) {
-    showToast('Stock máximo para este talle');
-    return;
-  }
-  item.qty = next;
-  renderCart();
+function changeQty(id,size,delta){
+  var item=cart.find(function(i){return i.id===id&&i.size===size;});
+  if(!item)return;
+  var p=PRODUCTS.find(function(p){return p.id===id;});
+  var max=p?p.sizes[size]:99;
+  var next=Math.max(1,Math.min(item.qty+delta,max));
+  if(next===item.qty&&delta>0){showToast('Stock máximo para este talle');return;}
+  item.qty=next;renderCart();
 }
 
-function updateCount() {
-  var total = cart.reduce(function(a, i){ return a + i.qty; }, 0);
-  var el = document.getElementById('cartCount');
-  el.textContent = total;
-  el.classList.add('bump');
-  setTimeout(function(){ el.classList.remove('bump'); }, 200);
+function updateCount(){
+  var total=cart.reduce(function(a,i){return a+i.qty;},0);
+  var el=document.getElementById('cartCount');
+  el.textContent=total;el.classList.add('bump');
+  setTimeout(function(){el.classList.remove('bump');},220);
 }
 
-function renderCart() {
-  var body   = document.getElementById('cartBody');
-  var footer = document.getElementById('cartFooter');
-
-  if (!cart.length) {
-    body.innerHTML =
-      '<div class="cart-empty">' +
-        '<div class="ce-icon">&#128722;</div>' +
-        '<p>Tu pedido est&aacute; vac&iacute;o.<br>Explor&aacute; el cat&aacute;logo y agrega&aacute; productos.</p>' +
-      '</div>';
-    footer.innerHTML = '';
-    return;
+function renderCart(){
+  var body=document.getElementById('cartBody');
+  var footer=document.getElementById('cartFooter');
+  if(!cart.length){
+    body.innerHTML='<div class="cart-empty"><div class="ce-icon">&#128722;</div><p>Tu pedido est&aacute; vac&iacute;o.<br>Explor&aacute; el cat&aacute;logo y agrega&aacute; productos.</p></div>';
+    footer.innerHTML='';return;
   }
 
-  body.innerHTML = cart.map(function(item) {
-    var pr = PRICES[item.id];
-    var unitPrice = item.qty >= WHOLESALE_MIN ? pr.wholesale : pr.unit;
-    return '<div class="cart-item">' +
-      '<div class="ci-thumb">' +
-        '<img src="' + item.img + '" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:8px"' +
-        ' onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' +
-        '<span style="display:none;font-size:1.6rem">' + item.emoji + '</span>' +
-      '</div>' +
-      '<div class="ci-info">' +
-        '<div class="ci-name">' + esc(item.name) + '</div>' +
-        '<div class="ci-size">Talle ' + item.size + '</div>' +
-        '<div class="ci-price">' + fmt(unitPrice * item.qty) + '</div>' +
-        '<div class="ci-controls">' +
-          '<button class="qty-btn" onclick="changeQty(\'' + item.id + '\',\'' + item.size + '\',-1)">&#8722;</button>' +
-          '<span class="qty-val">' + item.qty + '</span>' +
-          '<button class="qty-btn" onclick="changeQty(\'' + item.id + '\',\'' + item.size + '\',1)">+</button>' +
-        '</div>' +
-      '</div>' +
-      '<button class="ci-remove" onclick="removeFromCart(\'' + item.id + '\',\'' + item.size + '\')">&#10005;</button>' +
+  body.innerHTML=cart.map(function(item){
+    var pr=PRICES[item.id];
+    var u=item.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+    var priceStr=u>0?fmt(u*item.qty):'Consult&aacute; precio';
+    return '<div class="cart-item">'+
+      '<div class="ci-thumb">'+
+        '<img src="'+item.img+'" alt="" style="width:64px;height:64px;object-fit:cover" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">'+
+        '<span style="display:none;font-size:1.6rem">'+item.emoji+'</span>'+
+      '</div>'+
+      '<div class="ci-info">'+
+        '<div class="ci-name">'+esc(item.name)+'</div>'+
+        '<div class="ci-size">Talle '+item.size+'</div>'+
+        '<div class="ci-price">'+priceStr+'</div>'+
+        '<div class="ci-controls">'+
+          '<button class="qty-btn" onclick="changeQty(\''+item.id+'\',\''+item.size+'\',-1)">&#8722;</button>'+
+          '<span class="qty-val">'+item.qty+'</span>'+
+          '<button class="qty-btn" onclick="changeQty(\''+item.id+'\',\''+item.size+'\',1)">+</button>'+
+        '</div>'+
+      '</div>'+
+      '<button class="ci-remove" onclick="removeFromCart(\''+item.id+'\',\''+item.size+'\')">&#10005;</button>'+
     '</div>';
   }).join('');
 
-  var total = cart.reduce(function(sum, item) {
-    var pr = PRICES[item.id];
-    var unitPrice = item.qty >= WHOLESALE_MIN ? pr.wholesale : pr.unit;
-    return sum + unitPrice * item.qty;
-  }, 0);
+  var hasAllPrices=cart.every(function(i){return PRICES[i.id].unit>0;});
+  var total=cart.reduce(function(s,i){
+    var pr=PRICES[i.id];var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+    return s+(u*i.qty);
+  },0);
+  var totalStr=hasAllPrices?'<span class="ct-amount">'+fmt(total)+'</span>':'<span class="ct-amount consultar">Consultar precio</span>';
 
-  footer.innerHTML =
-    '<div class="cart-footer">' +
-      '<div class="cart-total-row">' +
-        '<span class="ct-label">Total del pedido</span>' +
-        '<span class="ct-amount">' + fmt(total) + '</span>' +
-      '</div>' +
-      '<div class="form-group">' +
-        '<label class="form-label" for="fName">Tu nombre *</label>' +
-        '<input class="form-input" id="fName" type="text" placeholder="Nombre completo" value="' + esc(formCache.name) + '" oninput="formCache.name=this.value">' +
-      '</div>' +
-      '<div class="form-group">' +
-        '<label class="form-label" for="fPhone">Tel&eacute;fono *</label>' +
-        '<input class="form-input" id="fPhone" type="tel" placeholder="11 1234-5678" value="' + esc(formCache.phone) + '" oninput="formCache.phone=this.value">' +
-      '</div>' +
-      '<div class="form-group">' +
-        '<label class="form-label" for="fAddr">Direcci&oacute;n de entrega</label>' +
-        '<input class="form-input" id="fAddr" type="text" placeholder="Calle, n&uacute;mero, localidad" value="' + esc(formCache.address) + '" oninput="formCache.address=this.value">' +
-      '</div>' +
-      '<button class="wa-btn" onclick="sendWhatsApp()">' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>' +
-        'Enviar pedido por WhatsApp' +
-      '</button>' +
+  footer.innerHTML=
+    '<div class="cart-footer">'+
+      '<div class="cart-total-row"><span class="ct-label">Total del pedido</span>'+totalStr+'</div>'+
+      '<div class="form-group"><label class="form-label">Tu nombre *</label>'+
+        '<input class="form-input" id="fName" type="text" placeholder="Nombre completo" value="'+esc(formCache.name)+'" oninput="formCache.name=this.value"></div>'+
+      '<div class="form-group"><label class="form-label">Tel&eacute;fono *</label>'+
+        '<input class="form-input" id="fPhone" type="tel" placeholder="11 1234-5678" value="'+esc(formCache.phone)+'" oninput="formCache.phone=this.value"></div>'+
+      '<div class="form-group"><label class="form-label">Direcci&oacute;n de entrega</label>'+
+        '<input class="form-input" id="fAddr" type="text" placeholder="Calle, n&uacute;mero, localidad" value="'+esc(formCache.address)+'" oninput="formCache.address=this.value"></div>'+
+      '<div class="form-group"><label class="form-label">Zona de env&iacute;o</label>'+
+        '<select class="form-select" id="fZona" onchange="formCache.zona=this.value">'+
+          '<option value="oeste"'+(formCache.zona==='oeste'?' selected':'')+'>&#128230; Zona Oeste GBA (entrega en 24-48hs)</option>'+
+          '<option value="correo"'+(formCache.zona==='correo'?' selected':'')+'>&#128666; Correo a todo el pa&iacute;s</option>'+
+        '</select></div>'+
+      '<div class="form-group"><label class="form-label">Nota opcional</label>'+
+        '<textarea class="form-textarea" id="fNota" placeholder="Color, consulta, aclaraci&oacute;n..." oninput="formCache.nota=this.value" rows="2">'+esc(formCache.nota)+'</textarea></div>'+
+      '<button class="wa-btn" onclick="sendWhatsApp()">'+waSVG(20,20)+' Enviar pedido por WhatsApp</button>'+
     '</div>';
 }
 
-/* ══════════════════════════════════════
+/* ════════════════════════════════════════
    WHATSAPP
-══════════════════════════════════════ */
-function sendWhatsApp() {
-  var name    = (document.getElementById('fName')  && document.getElementById('fName').value  || '').trim();
-  var phone   = (document.getElementById('fPhone') && document.getElementById('fPhone').value || '').trim();
-  var address = (document.getElementById('fAddr')  && document.getElementById('fAddr').value  || '').trim();
-  formCache = { name: name, phone: phone, address: address };
+════════════════════════════════════════ */
+function sendWhatsApp(){
+  var name   =(document.getElementById('fName')  &&document.getElementById('fName').value  ||'').trim();
+  var phone  =(document.getElementById('fPhone') &&document.getElementById('fPhone').value ||'').trim();
+  var address=(document.getElementById('fAddr')  &&document.getElementById('fAddr').value  ||'').trim();
+  var zona   =(document.getElementById('fZona')  &&document.getElementById('fZona').value  ||'oeste');
+  var nota   =(document.getElementById('fNota')  &&document.getElementById('fNota').value  ||'').trim();
+  formCache={name:name,phone:phone,address:address,zona:zona,nota:nota};
 
-  if (!name)  { showToast('Por favor ingresá tu nombre');    return; }
-  if (!phone) { showToast('Por favor ingresá tu teléfono'); return; }
+  if(!name) {showToast('Por favor ingresá tu nombre');return;}
+  if(!phone){showToast('Por favor ingresá tu teléfono');return;}
 
-  var total = cart.reduce(function(sum, item) {
-    var pr = PRICES[item.id];
-    var unitPrice = item.qty >= WHOLESALE_MIN ? pr.wholesale : pr.unit;
-    return sum + unitPrice * item.qty;
-  }, 0);
+  var zonaLabel=zona==='correo'?'Correo a todo el país':'Zona Oeste GBA';
+  var total=cart.reduce(function(s,i){
+    var pr=PRICES[i.id];var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;return s+(u*i.qty);
+  },0);
 
-  var detalle = cart.map(function(item) {
-    var pr = PRICES[item.id];
-    var unitPrice = item.qty >= WHOLESALE_MIN ? pr.wholesale : pr.unit;
-    var mayorLabel = item.qty >= WHOLESALE_MIN ? ' (mayorista)' : '';
-    return '• ' + item.name + ' — talle ' + item.size + ' — x' + item.qty + ' — ' + fmt(unitPrice * item.qty) + mayorLabel;
+  var detalle=cart.map(function(i){
+    var pr=PRICES[i.id];
+    var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;
+    var pStr=u>0?fmt(u*i.qty):'Consultar';
+    return '• '+i.name+' | Talle '+i.size+' | x'+i.qty+' | '+pStr;
   }).join('\n');
 
-  var lines = [
-    '🛒 *Nuevo pedido — FAUNA Calzados*',
-    '─────────────────────',
-    '👤 *Nombre:* ' + name,
-    '📞 *Teléfono:* ' + phone,
-    address ? '📍 *Entrega:* ' + address : '📍 *Entrega:* A confirmar',
-    '─────────────────────',
-    '📦 *Detalle:*',
-    detalle,
-    '─────────────────────',
-    '💰 *Total: ' + fmt(total) + '*',
-    '─────────────────────',
-    '_Pedido desde la tienda online de FAUNA Calzados_',
-  ];
+  var hasAllPrices=cart.every(function(i){return PRICES[i.id].unit>0;});
+  var totalLine=hasAllPrices?fmt(total):'Consultar precio';
 
-  var msg = lines.join('\n');
-  window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg), '_blank');
+  var lines=[
+    '🛔 *NUEVO PEDIDO — FAUNA CALZADOS*',
+    '',
+    '👤 *Cliente:* '+name,
+    '📱 *Teléfono:* '+phone,
+    '📍 *Dirección:* '+(address||'A confirmar'),
+    '🚚 *Envío:* '+zonaLabel,
+    '',
+    '📦 *PRODUCTOS:*',
+    detalle,
+    '',
+    '💰 *Total: '+totalLine+'*',
+  ];
+  if(nota) lines.push('','&#128203; *Nota:* '+nota);
+
+  window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(lines.join('\n')),'_blank');
 }
 
-/* ══════════════════════════════════════
-   KEYBOARD
-══════════════════════════════════════ */
-document.addEventListener('keydown', function(e) {
-  if (e.key !== 'Escape') return;
-  if (document.getElementById('modalOverlay').classList.contains('open')) {
-    closeModal();
-  } else if (document.getElementById('cartOverlay').classList.contains('open')) {
-    toggleCart();
-  }
+/* ════════════════════════════════════════
+   KEYBOARD & INIT
+════════════════════════════════════════ */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape')return;
+  if(document.getElementById('modalOverlay').classList.contains('open'))closeModal();
+  else if(document.getElementById('cartOverlay').classList.contains('open'))toggleCart();
 });
 
-/* Init */
 renderProducts();
 </script>
 </body>
