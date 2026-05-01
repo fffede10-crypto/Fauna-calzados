@@ -969,7 +969,7 @@ var cart        = [];
 var activeFilter = 'todos';
 var activeProduct = null;
 var activeSize    = null;
-var activeQty     = 1;
+var currentQty    = 1;
 var formCache = { name:'', phone:'', address:'', zona:'oeste', nota:'' };
 var searchQuery  = '';
 
@@ -1143,7 +1143,7 @@ function findProduct(id){
 function openModal(id){
   activeProduct=findProduct(id);
   activeSize=null;
-  activeQty=1;
+  currentQty=1;
   renderModal();
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1152,7 +1152,7 @@ function openModal(id){
 function closeModal(){
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow='';
-  activeProduct=null;activeSize=null;activeQty=1;
+  activeProduct=null;activeSize=null;currentQty=1;
 }
 
 function handleModalClick(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
@@ -1188,7 +1188,7 @@ function renderModal(){
   var imgClass=isImported?'modal-img-wrap':'modal-img-wrap national';
 
   var addLabel=activeSize
-    ?(activeQty>1?'Agregar '+activeQty+' al pedido':'Agregar talle '+activeSize+' al pedido')
+    ?(currentQty>1?'Agregar '+currentQty+' al pedido':'Agregar talle '+activeSize+' al pedido')
     :'Seleccioná un talle';
 
   document.getElementById('modalContent').innerHTML=
@@ -1211,13 +1211,9 @@ function renderModal(){
       priceHTML+
       '<div class="sizes-label">Eleg&iacute; tu talle</div>'+
       '<div class="sizes-grid">'+sizeBtns+'</div>'+
-      '<div class="qty-control" id="qtyControl" style="display:'+(activeSize?'block':'none')+'">'+
+      '<div class="qty-control" id="qtyControl" style="display:none">'+
         '<div class="sizes-label">Cantidad</div>'+
-        '<div class="qty-row">'+
-          '<button type="button" class="qty-circle-btn" onclick="event.stopPropagation();changeModalQty(-1)">&#8722;</button>'+
-          '<span class="qty-num" id="qtyDisplay">'+activeQty+'</span>'+
-          '<button type="button" class="qty-circle-btn" onclick="event.stopPropagation();changeModalQty(1)">+</button>'+
-        '</div>'+
+        '<div class="qty-row" id="qtyRow"></div>'+
       '</div>'+
       '<div class="modal-actions">'+
         '<button class="add-btn" id="addBtn" onclick="addToCart()"'+(!activeSize?' disabled':'')+'>'+addLabel+'</button>'+
@@ -1230,12 +1226,18 @@ function renderModal(){
 
 function pickSize(sz){
   activeSize=sz;
-  activeQty=1;
+  currentQty=1;
   document.querySelectorAll('.size-btn').forEach(function(b){b.classList.toggle('selected',b.dataset.size===sz);});
+  var max=activeProduct.sizes[sz];
   var qc=document.getElementById('qtyControl');
   if(qc){qc.style.display='block';}
-  var qd=document.getElementById('qtyDisplay');
-  if(qd){qd.textContent=1;}
+  var qr=document.getElementById('qtyRow');
+  if(qr){
+    qr.innerHTML=
+      '<button type="button" class="qty-circle-btn" onclick="event.stopPropagation();changeQty(-1,'+max+')">&#8722;</button>'+
+      '<span class="qty-num" id="qtyDisplay">1</span>'+
+      '<button type="button" class="qty-circle-btn" onclick="event.stopPropagation();changeQty(1,'+max+')">+</button>';
+  }
   updateAddBtn();
 }
 
@@ -1243,15 +1245,13 @@ function updateAddBtn(){
   var btn=document.getElementById('addBtn');
   if(!btn||!activeSize)return;
   btn.disabled=false;
-  btn.textContent=activeQty>1?'Agregar '+activeQty+' al pedido':'Agregar talle '+activeSize+' al pedido';
+  btn.textContent=currentQty>1?'Agregar '+currentQty+' al pedido':'Agregar talle '+activeSize+' al pedido';
 }
 
-function changeModalQty(delta){
-  if(!activeSize||!activeProduct)return;
-  var max=activeProduct.sizes[activeSize];
-  activeQty=Math.max(1,Math.min(activeQty+delta,max));
+function changeQty(delta,max){
+  currentQty=Math.max(1,Math.min(currentQty+delta,max));
   var qd=document.getElementById('qtyDisplay');
-  if(qd)qd.textContent=activeQty;
+  if(qd)qd.textContent=currentQty;
   updateAddBtn();
 }
 
@@ -1270,7 +1270,7 @@ function handleCartClick(e){if(e.target===document.getElementById('cartOverlay')
 function addToCart(){
   if(!activeProduct||!activeSize)return;
   var max=activeProduct.sizes[activeSize];
-  var toAdd=activeQty||1;
+  var toAdd=currentQty||1;
   var ex=cart.find(function(i){return i.id===activeProduct.id&&i.size===activeSize;});
   if(ex){
     var newQty=Math.min(ex.qty+toAdd,max);
@@ -1294,7 +1294,7 @@ function removeFromCart(id,size){
   updateCount();renderCart();
 }
 
-function changeQty(id,size,delta){
+function changeCartQty(id,size,delta){
   var item=cart.find(function(i){return i.id===id&&i.size===size;});
   if(!item)return;
   var p=findProduct(id);
@@ -1333,9 +1333,9 @@ function renderCart(){
         '<div class="ci-size">Talle '+item.size+'</div>'+
         '<div class="ci-price">'+priceStr+'</div>'+
         '<div class="ci-controls">'+
-          '<button class="qty-btn" onclick="changeQty(\''+item.id+'\',\''+item.size+'\',-1)">&#8722;</button>'+
+          '<button class="qty-btn" onclick="changeCartQty(\''+item.id+'\',\''+item.size+'\',-1)">&#8722;</button>'+
           '<span class="qty-val">'+item.qty+'</span>'+
-          '<button class="qty-btn" onclick="changeQty(\''+item.id+'\',\''+item.size+'\',1)">+</button>'+
+          '<button class="qty-btn" onclick="changeCartQty(\''+item.id+'\',\''+item.size+'\',1)">+</button>'+
         '</div>'+
       '</div>'+
       '<button class="ci-remove" onclick="removeFromCart(\''+item.id+'\',\''+item.size+'\')">&#10005;</button>'+
