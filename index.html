@@ -26,6 +26,8 @@
   --text-faint:  #555;
   --red:         #d95252;
   --green:       #25D366;
+  --indigo:      #5b7cf5;
+  --indigo-dim:  rgba(91,124,245,.12);
   --r-sm: 8px; --r: 12px; --r-lg: 18px;
   --ease: 0.22s ease;
 }
@@ -497,6 +499,53 @@ a{text-decoration:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 /* ════════════════════════════════════════
+   IMPORTADAS BRASIL
+════════════════════════════════════════ */
+.importadas-section{
+  background:linear-gradient(180deg,#0b0e1c 0%,#0d0d16 100%);
+  border-top:1px solid rgba(91,124,245,.28);
+  border-bottom:1px solid rgba(91,124,245,.28);
+  padding:3.5rem 1.5rem 4.5rem;
+}
+.importadas-inner{max-width:1320px;margin:0 auto}
+.importadas-header{text-align:center;margin-bottom:2.8rem}
+.importadas-section-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(91,124,245,.14);color:#8fa8f9;
+  border:1px solid rgba(91,124,245,.4);
+  border-radius:50px;padding:.4rem 1.1rem;
+  font-size:.7rem;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:1.2rem;
+}
+.importadas-header h2{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,5vw,3.2rem);font-weight:600;
+  color:var(--text);line-height:1.1;margin-bottom:.65rem;
+}
+.importadas-header h2 span{color:#8fa8f9}
+.importadas-header p{
+  font-size:.9rem;color:var(--text-muted);max-width:500px;
+  margin:0 auto;font-weight:300;line-height:1.7;
+}
+.importadas-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:1.25rem;
+}
+.badge-importada{background:rgba(91,124,245,.14);color:#8fa8f9;border:1px solid rgba(91,124,245,.35)}
+.product-card.imp-card{
+  background:var(--bg3);
+  border-color:rgba(91,124,245,.22);
+}
+.product-card.imp-card:hover{
+  border-color:rgba(91,124,245,.65);
+  box-shadow:0 20px 56px rgba(91,124,245,.18);
+}
+@media(max-width:640px){
+  .importadas-section{padding:2.5rem 1rem 3.5rem}
+}
+
+/* ════════════════════════════════════════
    RESPONSIVE
 ════════════════════════════════════════ */
 @media(max-width:768px){
@@ -602,6 +651,20 @@ a{text-decoration:none}
 </section>
 
 <!-- ════════════════════
+     IMPORTADAS BRASIL
+════════════════════ -->
+<section class="importadas-section" id="importadas">
+  <div class="importadas-inner">
+    <div class="importadas-header">
+      <div class="importadas-section-badge">&#127758; IMPORTADAS BRASIL</div>
+      <h2>Zapatillas <span>Importadas</span></h2>
+      <p>Importadas directamente desde Brasil &mdash; stock &uacute;nico, unidades limitadas</p>
+    </div>
+    <div class="importadas-grid" id="importadasGrid"></div>
+  </div>
+</section>
+
+<!-- ════════════════════
      CATALOG
 ════════════════════ -->
 <section class="catalog" id="catalogo">
@@ -702,6 +765,17 @@ var PRICES = {
   'preski-negra':    { unit: 0, mayor: 0 },
   'preski-baja':     { unit: 0, mayor: 0 },
   '47street':        { unit: 0, mayor: 0 },
+  /* ── Importadas Brasil ── */
+  'imp-campus-verde':            { unit: 0, mayor: 0 },
+  'imp-campus-celeste':          { unit: 0, mayor: 0 },
+  'imp-vans-knu-verde-amarillo': { unit: 0, mayor: 0 },
+  'imp-vans-flyknit-negro':      { unit: 0, mayor: 0 },
+  'imp-travis-scott':            { unit: 0, mayor: 0 },
+  'imp-vans-knu-beige':          { unit: 0, mayor: 0 },
+  'imp-knu-blanca':              { unit: 0, mayor: 0 },
+  'imp-knu-classic':             { unit: 0, mayor: 0 },
+  'imp-vans-marron-negro':       { unit: 0, mayor: 0 },
+  'imp-knu-celeste':             { unit: 0, mayor: 0 },
 };
 var WHOLESALE_MIN = 3;
 var WA_NUMBER = '5491130570055';
@@ -743,6 +817,42 @@ var PRODUCTS = [
   { id:'47street',        name:'47 Street',          category:'zapatillas',emoji:'👟', hot:false,
     desc:'Zapatilla urbana negra con relieve bold y suela air. Street style para el invierno.',
     img:'./img/47street.jpg',        sizes:{'35':1,'36':1,'38':3,'39':1} },
+];
+
+/* ═══════════════════════════════════════════════════════
+   IMPORTADAS BRASIL
+   ═══════════════════════════════════════════════════════ */
+var IMPORTADAS = [
+  { id:'imp-campus-verde',           name:'Campus Verde',          category:'importadas', emoji:'👟', hot:false,
+    desc:'Adidas Campus gamuza verde, 3 rayas blancas, suela gum.',
+    img:'./img/campus-verde.png',    sizes:{'BR 35 / AR 36':1} },
+  { id:'imp-campus-celeste',         name:'Campus Celeste',         category:'importadas', emoji:'👟', hot:false,
+    desc:'Adidas Campus gamuza celeste, 3 rayas blancas.',
+    img:'./img/campus-celeste.png',  sizes:{'BR 37 / AR 38':1} },
+  { id:'imp-vans-knu-verde-amarillo',name:'Vans Knu Verde/Amarillo',category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans Knu Skool verde con franja amarilla.',
+    img:'./img/vans-knu-verde-amarillo.png', sizes:{'BR 39 / AR 40':1} },
+  { id:'imp-vans-flyknit-negro',     name:'Vans Flyknit Negro',     category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans flyknit negro, suela negra chunky.',
+    img:'./img/vans-flyknit-negro.png', sizes:{'BR 39 / AR 40':1} },
+  { id:'imp-travis-scott',           name:'Travis Scott Nike',      category:'importadas', emoji:'👟', hot:true,
+    desc:'Nike estilo Travis Scott, blanco/negro/azul.',
+    img:'./img/travis-scott-nike.png', sizes:{'BR 41 / AR 42':1} },
+  { id:'imp-vans-knu-beige',         name:'Vans Knu Beige',         category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans Knu Skool gamuza beige.',
+    img:'./img/vans-knu-beige.png',  sizes:{'BR 35 / AR 36':1,'BR 40 / AR 41':1,'BR 41 / AR 42':1} },
+  { id:'imp-knu-blanca',             name:'Knu Blanca',             category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans Knu Skool blanca total.',
+    img:'./img/knu-blanca.png',      sizes:{'BR 41 / AR 42':1,'BR 42 / AR 43':1} },
+  { id:'imp-knu-classic',            name:'Knu Classic',            category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans Knu Classic negro/blanco.',
+    img:'./img/knu-classic-negra.png', sizes:{'BR 38 / AR 39':1,'BR 39 / AR 40':3,'BR 41 / AR 42':4} },
+  { id:'imp-vans-marron-negro',      name:'Vans Marrón/Negro', category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans marrón con franja negra.',
+    img:'./img/vans-knu-beige.png',  sizes:{'BR 38 / AR 39':1,'BR 40 / AR 41':1,'BR 41 / AR 42':1} },
+  { id:'imp-knu-celeste',            name:'Knu Celeste',            category:'importadas', emoji:'👟', hot:false,
+    desc:'Vans Knu azul/celeste bicolor.',
+    img:'./img/knu-celeste.png',     sizes:{'BR 39 / AR 40':1,'BR 40 / AR 41':1,'BR 41 / AR 42':1} },
 ];
 
 /* ── State ── */
@@ -870,10 +980,58 @@ function renderProducts(){
 }
 
 /* ════════════════════════════════════════
+   IMPORTADAS RENDER
+════════════════════════════════════════ */
+function renderImportadas(){
+  var grid=document.getElementById('importadasGrid');
+  if(!grid)return;
+  grid.innerHTML=IMPORTADAS.map(function(p,i){
+    var stock=totalStock(p);
+    var isLast=stock>0&&stock<=4;
+    var pr=PRICES[p.id];
+    var unitStr=fmtPrice(pr.unit);
+    var hasPrice=pr.unit>0;
+
+    var badges=
+      '<span class="badge badge-importada">&#127463;&#127479; IMPORTADA</span>'+
+      (p.hot?'<span class="badge badge-hot">&#128293; Destacada</span>':'')+
+      (isLast?'<span class="badge badge-last">&#9889; &Uacute;ltimos</span>':'');
+
+    var priceHTML=hasPrice
+      ?'<div class="card-price">'+unitStr+'</div>'
+      :'<div class="card-price consultar">Consult&aacute; precio</div>';
+
+    return '<article class="product-card imp-card" onclick="openModal(\''+p.id+'\')" style="animation-delay:'+(i*0.04)+'s">'+
+      '<div class="card-img-wrap skeleton">'+
+        '<img class="card-img" src="'+p.img+'" alt="'+esc(p.name)+'" loading="lazy"'+
+        ' onload="this.parentElement.classList.remove(\'skeleton\')"'+
+        ' onerror="this.style.display=\'none\';this.parentElement.classList.remove(\'skeleton\');this.nextElementSibling.style.display=\'flex\'">'+
+        '<div class="card-placeholder">'+
+          '<span class="pl-emoji">'+p.emoji+'</span>'+
+          '<span class="pl-name">'+esc(p.name.toUpperCase())+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="card-body">'+
+        '<div class="card-badges">'+badges+'</div>'+
+        '<div class="card-name">'+esc(p.name)+'</div>'+
+        '<div class="card-desc">'+esc(p.desc)+'</div>'+
+        priceHTML+
+        '<button class="card-cta" onclick="event.stopPropagation();openModal(\''+p.id+'\')">Ver talles &rarr;</button>'+
+      '</div>'+
+    '</article>';
+  }).join('');
+}
+
+/* ════════════════════════════════════════
    MODAL
 ════════════════════════════════════════ */
+function findProduct(id){
+  return PRODUCTS.find(function(p){return p.id===id;})||
+         IMPORTADAS.find(function(p){return p.id===id;});
+}
+
 function openModal(id){
-  activeProduct=PRODUCTS.find(function(p){return p.id===id;});
+  activeProduct=findProduct(id);
   activeSize=null;
   renderModal();
   document.getElementById('modalOverlay').classList.add('open');
@@ -992,7 +1150,7 @@ function removeFromCart(id,size){
 function changeQty(id,size,delta){
   var item=cart.find(function(i){return i.id===id&&i.size===size;});
   if(!item)return;
-  var p=PRODUCTS.find(function(p){return p.id===id;});
+  var p=findProduct(id);
   var max=p?p.sizes[size]:99;
   var next=Math.max(1,Math.min(item.qty+delta,max));
   if(next===item.qty&&delta>0){showToast('Stock máximo para este talle');return;}
@@ -1121,6 +1279,7 @@ document.addEventListener('keydown',function(e){
 });
 
 renderProducts();
+renderImportadas();
 </script>
 </body>
 </html>
