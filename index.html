@@ -447,6 +447,12 @@ a{text-decoration:none}
 .wa-btn:hover{background:#1ebe5d;transform:translateY(-1px)}
 .wa-btn:active{transform:translateY(0)}
 .wa-btn svg{flex-shrink:0}
+.shipping-badge{
+  display:inline-flex;align-items:center;gap:.35rem;
+  border-radius:50px;padding:.3rem .85rem;font-size:.78rem;font-weight:600;
+}
+.shipping-free{background:rgba(37,211,102,.14);color:#25D366;border:1px solid rgba(37,211,102,.35)}
+.shipping-paid{background:rgba(255,200,50,.1);color:#d4a800;border:1px solid rgba(255,200,50,.3)}
 
 /* ════════════════════════════════════════
    FLOATING WA BUTTON
@@ -846,16 +852,16 @@ var PRICES = {
   'preski-baja':     { unit: 0, mayor: 0 },
   '47street':        { unit: 0, mayor: 0 },
   /* ── Importadas Brasil ── */
-  'imp-campus-verde':            { unit: 0, mayor: 0 },
-  'imp-campus-celeste':          { unit: 0, mayor: 0 },
-  'imp-vans-knu-verde-amarillo': { unit: 0, mayor: 0 },
-  'imp-vans-flyknit-negro':      { unit: 0, mayor: 0 },
-  'imp-travis-scott':            { unit: 0, mayor: 0 },
-  'imp-vans-knu-beige':          { unit: 0, mayor: 0 },
-  'imp-knu-blanca':              { unit: 0, mayor: 0 },
-  'imp-knu-classic':             { unit: 0, mayor: 0 },
-  'imp-vans-marron-negro':       { unit: 0, mayor: 0 },
-  'imp-knu-celeste':             { unit: 0, mayor: 0 },
+  'imp-campus-verde':            { unit: 45000, mayor: 38000 },
+  'imp-campus-celeste':          { unit: 45000, mayor: 38000 },
+  'imp-vans-knu-verde-amarillo': { unit: 45000, mayor: 38000 },
+  'imp-vans-flyknit-negro':      { unit: 45000, mayor: 38000 },
+  'imp-travis-scott':            { unit: 45000, mayor: 38000 },
+  'imp-vans-knu-beige':          { unit: 45000, mayor: 38000 },
+  'imp-knu-blanca':              { unit: 45000, mayor: 38000 },
+  'imp-knu-classic':             { unit: 45000, mayor: 38000 },
+  'imp-vans-marron-negro':       { unit: 45000, mayor: 38000 },
+  'imp-knu-celeste':             { unit: 45000, mayor: 38000 },
 };
 var WHOLESALE_MIN = 3;
 var WA_NUMBER = '5491130570055';
@@ -1292,14 +1298,32 @@ function renderCart(){
       '<div class="form-group"><label class="form-label">Direcci&oacute;n de entrega</label>'+
         '<input class="form-input" id="fAddr" type="text" placeholder="Calle, n&uacute;mero, localidad" value="'+esc(formCache.address)+'" oninput="formCache.address=this.value"></div>'+
       '<div class="form-group"><label class="form-label">Zona de env&iacute;o</label>'+
-        '<select class="form-select" id="fZona" onchange="formCache.zona=this.value">'+
+        '<select class="form-select" id="fZona" onchange="updateShippingBadge()">'+
           '<option value="oeste"'+(formCache.zona==='oeste'?' selected':'')+'>&#128230; Zona Oeste GBA (entrega en 24-48hs)</option>'+
           '<option value="correo"'+(formCache.zona==='correo'?' selected':'')+'>&#128666; Correo a todo el pa&iacute;s</option>'+
-        '</select></div>'+
+        '</select>'+
+        '<div id="shippingBadge" style="margin-top:.5rem">'+shippingBadgeHTML(formCache.zona)+'</div>'+
+      '</div>'+
       '<div class="form-group"><label class="form-label">Nota opcional</label>'+
         '<textarea class="form-textarea" id="fNota" placeholder="Color, consulta, aclaraci&oacute;n..." oninput="formCache.nota=this.value" rows="2">'+esc(formCache.nota)+'</textarea></div>'+
       '<button class="wa-btn" onclick="sendWhatsApp()">'+waSVG(20,20)+' Enviar pedido por WhatsApp</button>'+
     '</div>';
+}
+
+/* ════════════════════════════════════════
+   SHIPPING BADGE
+════════════════════════════════════════ */
+function shippingBadgeHTML(zona){
+  if(zona==='oeste')
+    return '<span class="shipping-badge shipping-free">&#128666; Env&iacute;o GRATIS</span>';
+  return '<span class="shipping-badge shipping-paid">&#128206; Costo de env&iacute;o a confirmar por WhatsApp</span>';
+}
+
+function updateShippingBadge(){
+  var zona=document.getElementById('fZona').value;
+  formCache.zona=zona;
+  var el=document.getElementById('shippingBadge');
+  if(el) el.innerHTML=shippingBadgeHTML(zona);
 }
 
 /* ════════════════════════════════════════
@@ -1317,6 +1341,9 @@ function sendWhatsApp(){
   if(!phone){showToast('Por favor ingresá tu teléfono');return;}
 
   var zonaLabel=zona==='correo'?'Correo a todo el país':'Zona Oeste GBA';
+  var envioLine=zona==='oeste'
+    ?'🚚 *Envío:* GRATIS (Zona Oeste)'
+    :'📮 *Envío:* A calcular — te confirmamos el costo por WhatsApp';
   var total=cart.reduce(function(s,i){
     var pr=PRICES[i.id];var u=i.qty>=WHOLESALE_MIN&&pr.mayor>0?pr.mayor:pr.unit;return s+(u*i.qty);
   },0);
@@ -1337,7 +1364,7 @@ function sendWhatsApp(){
     '👤 *Cliente:* '+name,
     '📱 *Teléfono:* '+phone,
     '📍 *Dirección:* '+(address||'A confirmar'),
-    '🚚 *Envío:* '+zonaLabel,
+    envioLine,
     '',
     '📦 *PRODUCTOS:*',
     detalle,
