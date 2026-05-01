@@ -359,6 +359,15 @@ a{text-decoration:none}
 .card-img-wrap.national .card-img{object-fit:contain;padding:12px}
 .modal-img-wrap.national{background:#FAF7F2;display:flex;align-items:center;justify-content:center}
 .modal-img-wrap.national .modal-img{object-fit:contain;padding:16px}
+/* Brand ribbon — covers old logo on selected product photos */
+.brand-ribbon{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(44,24,16,.85);
+  color:#C49A6C;
+  font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;
+  text-align:center;padding:5px 0;letter-spacing:.06em;
+  pointer-events:none;
+}
 
 .modal-actions{display:flex;flex-direction:column;gap:.65rem}
 .add-btn{
@@ -1068,6 +1077,7 @@ function renderProducts(){
         (pr.mayor>0?'<div class="card-price-w"><strong>'+fmt(pr.mayor)+'</strong> c/u llevando '+WHOLESALE_MIN+' o m&aacute;s</div>':'')
       :'<div class="card-price consultar">Consult&aacute; precio</div>';
 
+    var needsRibbon=p.id==='pantubota-negra'||p.id==='pantubota-beige'||p.id==='lluvia-beige';
     return '<article class="product-card" onclick="openModal(\''+p.id+'\')" style="animation-delay:'+(i*0.04)+'s">'+
       '<div class="card-img-wrap national skeleton">'+
         '<img class="card-img" src="'+p.img+'" alt="'+esc(p.name)+'" loading="lazy"'+
@@ -1077,6 +1087,7 @@ function renderProducts(){
           '<span class="pl-emoji">'+p.emoji+'</span>'+
           '<span class="pl-name">'+esc(p.name.toUpperCase())+'</span>'+
         '</div>'+
+        (needsRibbon?'<div class="brand-ribbon">Ra&iacute;z Calzados</div>':'')+
       '</div>'+
       '<div class="card-body">'+
         '<div class="card-badges">'+badges+'</div>'+
@@ -1186,6 +1197,7 @@ function renderModal(){
   var waConsultMsg=encodeURIComponent('Hola! Me interesa el producto: *'+p.name+'*. ¿Podrían darme el precio?');
   var isImported=p.id.indexOf('imp-')===0;
   var imgClass=isImported?'modal-img-wrap':'modal-img-wrap national';
+  var needsRibbon=p.id==='pantubota-negra'||p.id==='pantubota-beige'||p.id==='lluvia-beige';
 
   var addLabel=activeSize
     ?(activeQty>1?'Agregar '+activeQty+' al pedido':'Agregar talle '+activeSize+' al pedido')
@@ -1200,6 +1212,7 @@ function renderModal(){
         '<span class="pl-emoji">'+p.emoji+'</span>'+
         '<span class="pl-name">'+esc(p.name.toUpperCase())+'</span>'+
       '</div>'+
+      (needsRibbon?'<div class="brand-ribbon">Ra&iacute;z Calzados</div>':'')+
     '</div>'+
     '<div class="modal-body">'+
       '<div class="card-badges" style="margin-bottom:.5rem">'+badges+'</div>'+
@@ -1214,9 +1227,9 @@ function renderModal(){
       '<div class="qty-control" id="qtyControl" style="display:'+(activeSize?'block':'none')+'">'+
         '<div class="sizes-label">Cantidad</div>'+
         '<div class="qty-row">'+
-          '<button class="qty-circle-btn" onclick="changeModalQty(-1)">&#8722;</button>'+
+          '<button type="button" class="qty-circle-btn" onclick="event.stopPropagation();changeModalQty(-1)">&#8722;</button>'+
           '<span class="qty-num" id="qtyDisplay">'+activeQty+'</span>'+
-          '<button class="qty-circle-btn" onclick="changeModalQty(1)">+</button>'+
+          '<button type="button" class="qty-circle-btn" onclick="event.stopPropagation();changeModalQty(1)">+</button>'+
         '</div>'+
       '</div>'+
       '<div class="modal-actions">'+
