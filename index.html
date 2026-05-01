@@ -339,6 +339,27 @@ a{text-decoration:none}
 .size-btn.selected{background:#2C1810;border-color:#2C1810;color:#F0E6D3;font-weight:600}
 .size-btn.selected .size-qty{color:rgba(240,230,211,.6)}
 .size-btn[disabled]{opacity:.28;cursor:not-allowed;text-decoration:line-through}
+/* Quantity selector in modal */
+.qty-control{margin-bottom:.9rem}
+.qty-row{display:flex;align-items:center;gap:.85rem;margin-top:.4rem}
+.qty-circle-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:#2C1810;color:#F0E6D3;border:none;
+  font-size:1.15rem;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background var(--ease);flex-shrink:0;
+}
+.qty-circle-btn:hover{background:#8B5E3C}
+.qty-num{
+  font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;
+  color:#2C1810;min-width:2rem;text-align:center;line-height:1;
+}
+/* National product images — contain, no crop */
+.card-img-wrap.national{background:#FAF7F2}
+.card-img-wrap.national .card-img{object-fit:contain;padding:12px}
+.modal-img-wrap.national{background:#FAF7F2;display:flex;align-items:center;justify-content:center}
+.modal-img-wrap.national .modal-img{object-fit:contain;padding:16px}
+
 .modal-actions{display:flex;flex-direction:column;gap:.65rem}
 .add-btn{
   width:100%;background:#2C1810;color:#F0E6D3;border:none;
@@ -948,6 +969,7 @@ var cart        = [];
 var activeFilter = 'todos';
 var activeProduct = null;
 var activeSize    = null;
+var activeQty     = 1;
 var formCache = { name:'', phone:'', address:'', zona:'oeste', nota:'' };
 var searchQuery  = '';
 
@@ -1047,7 +1069,7 @@ function renderProducts(){
       :'<div class="card-price consultar">Consult&aacute; precio</div>';
 
     return '<article class="product-card" onclick="openModal(\''+p.id+'\')" style="animation-delay:'+(i*0.04)+'s">'+
-      '<div class="card-img-wrap skeleton">'+
+      '<div class="card-img-wrap national skeleton">'+
         '<img class="card-img" src="'+p.img+'" alt="'+esc(p.name)+'" loading="lazy"'+
         ' onload="this.parentElement.classList.remove(\'skeleton\')"'+
         ' onerror="this.style.display=\'none\';this.parentElement.classList.remove(\'skeleton\');this.nextElementSibling.style.display=\'flex\'">'+
@@ -1121,6 +1143,7 @@ function findProduct(id){
 function openModal(id){
   activeProduct=findProduct(id);
   activeSize=null;
+  activeQty=1;
   renderModal();
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1129,7 +1152,7 @@ function openModal(id){
 function closeModal(){
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow='';
-  activeProduct=null;activeSize=null;
+  activeProduct=null;activeSize=null;activeQty=1;
 }
 
 function handleModalClick(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
@@ -1161,9 +1184,15 @@ function renderModal(){
     :'<div class="modal-price consultar">Consult&aacute; precio por WhatsApp</div><div class="modal-price-w" style="margin-bottom:1.2rem"></div>';
 
   var waConsultMsg=encodeURIComponent('Hola! Me interesa el producto: *'+p.name+'*. ¿Podrían darme el precio?');
+  var isImported=p.id.indexOf('imp-')===0;
+  var imgClass=isImported?'modal-img-wrap':'modal-img-wrap national';
+
+  var addLabel=activeSize
+    ?(activeQty>1?'Agregar '+activeQty+' al pedido':'Agregar talle '+activeSize+' al pedido')
+    :'Seleccioná un talle';
 
   document.getElementById('modalContent').innerHTML=
-    '<div class="modal-img-wrap skeleton">'+
+    '<div class="'+imgClass+' skeleton">'+
       '<img class="modal-img" src="'+p.img+'" alt="'+esc(p.name)+'"'+
       ' onload="this.parentElement.classList.remove(\'skeleton\')"'+
       ' onerror="this.style.display=\'none\';this.parentElement.classList.remove(\'skeleton\');this.nextElementSibling.style.display=\'flex\'">'+
@@ -1182,10 +1211,16 @@ function renderModal(){
       priceHTML+
       '<div class="sizes-label">Eleg&iacute; tu talle</div>'+
       '<div class="sizes-grid">'+sizeBtns+'</div>'+
+      '<div class="qty-control" id="qtyControl" style="display:'+(activeSize?'block':'none')+'">'+
+        '<div class="sizes-label">Cantidad</div>'+
+        '<div class="qty-row">'+
+          '<button class="qty-circle-btn" onclick="changeModalQty(-1)">&#8722;</button>'+
+          '<span class="qty-num" id="qtyDisplay">'+activeQty+'</span>'+
+          '<button class="qty-circle-btn" onclick="changeModalQty(1)">+</button>'+
+        '</div>'+
+      '</div>'+
       '<div class="modal-actions">'+
-        '<button class="add-btn" id="addBtn" onclick="addToCart()"'+(!activeSize?' disabled':'')+'>'+
-          (activeSize?'Agregar talle '+activeSize+' al pedido':'Seleccion&aacute; un talle')+
-        '</button>'+
+        '<button class="add-btn" id="addBtn" onclick="addToCart()"'+(!activeSize?' disabled':'')+'>'+addLabel+'</button>'+
         '<a href="https://wa.me/'+WA_NUMBER+'?text='+waConsultMsg+'" target="_blank" rel="noopener" class="wa-consult-btn">'+
           waSVG(18,18)+' Consultar por WhatsApp'+
         '</a>'+
@@ -1195,9 +1230,29 @@ function renderModal(){
 
 function pickSize(sz){
   activeSize=sz;
+  activeQty=1;
   document.querySelectorAll('.size-btn').forEach(function(b){b.classList.toggle('selected',b.dataset.size===sz);});
+  var qc=document.getElementById('qtyControl');
+  if(qc){qc.style.display='block';}
+  var qd=document.getElementById('qtyDisplay');
+  if(qd){qd.textContent=1;}
+  updateAddBtn();
+}
+
+function updateAddBtn(){
   var btn=document.getElementById('addBtn');
-  if(btn){btn.disabled=false;btn.textContent='Agregar talle '+sz+' al pedido';}
+  if(!btn||!activeSize)return;
+  btn.disabled=false;
+  btn.textContent=activeQty>1?'Agregar '+activeQty+' al pedido':'Agregar talle '+activeSize+' al pedido';
+}
+
+function changeModalQty(delta){
+  if(!activeSize||!activeProduct)return;
+  var max=activeProduct.sizes[activeSize];
+  activeQty=Math.max(1,Math.min(activeQty+delta,max));
+  var qd=document.getElementById('qtyDisplay');
+  if(qd)qd.textContent=activeQty;
+  updateAddBtn();
 }
 
 /* ════════════════════════════════════════
@@ -1215,17 +1270,21 @@ function handleCartClick(e){if(e.target===document.getElementById('cartOverlay')
 function addToCart(){
   if(!activeProduct||!activeSize)return;
   var max=activeProduct.sizes[activeSize];
+  var toAdd=activeQty||1;
   var ex=cart.find(function(i){return i.id===activeProduct.id&&i.size===activeSize;});
   if(ex){
-    if(ex.qty>=max){showToast('Stock máximo alcanzado para este talle');return;}
-    ex.qty++;
+    var newQty=Math.min(ex.qty+toAdd,max);
+    if(newQty===ex.qty){showToast('Stock máximo alcanzado para este talle');return;}
+    var added=newQty-ex.qty;
+    ex.qty=newQty;
+    showToast('Agregado: '+activeProduct.name+' — talle '+activeSize+(added>1?' (x'+added+')':''));
   } else {
-    cart.push({id:activeProduct.id,name:activeProduct.name,size:activeSize,qty:1,emoji:activeProduct.emoji,img:activeProduct.img});
+    var qty=Math.min(toAdd,max);
+    cart.push({id:activeProduct.id,name:activeProduct.name,size:activeSize,qty:qty,emoji:activeProduct.emoji,img:activeProduct.img});
+    showToast('Agregado: '+activeProduct.name+' — talle '+activeSize+(qty>1?' (x'+qty+')':''));
   }
   updateCount();
-  showToast('Agregado: '+activeProduct.name+' — talle '+activeSize);
   closeModal();
-  // Cart icon animation
   var btn=document.getElementById('cartBtn');
   btn.classList.add('pop');setTimeout(function(){btn.classList.remove('pop');},380);
 }
